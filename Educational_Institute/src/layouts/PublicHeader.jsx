@@ -1,4 +1,4 @@
-import { useNavigate} from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 
 export default function PublicHeader() {
 
@@ -10,23 +10,21 @@ export default function PublicHeader() {
     }
 
     return (
-        <>
-            <header className="header-user">
-                <div className="logo-con">
-                    <img src='/logo.png'></img>
-                </div>
-                <div className="menu-holder">
-                    <div className="home-menu">Home</div>
-                    <div className="list-menu">Listings</div>
-                    <div className="compare-menu">Comparison</div>
-                </div>
-                <div></div>
-                {
-                    value ?  <div className="btn-signup" onClick={logout}>Logout</div>
-                    :<div className="btn-signup">Sign up</div>
-
-                }
-            </header>
-        </>
+        <header className="header-user">
+            <NavLink to="/" className="logo-con" aria-label="Go to homepage">
+                <img src='/logo.png' alt="Recommendation and comparison system logo" />
+            </NavLink>
+            <nav className="menu-holder" aria-label="Primary navigation">
+                <NavLink to="/" end className={({ isActive }) => isActive ? 'menu-link menu-link-active' : 'menu-link'}>Home</NavLink>
+                <NavLink to="/institution" className={({ isActive }) => isActive ? 'menu-link menu-link-active' : 'menu-link'}>Listings</NavLink>
+                <NavLink to="/comparison" className={({ isActive }) => isActive ? 'menu-link menu-link-active' : 'menu-link'}>Comparison</NavLink>
+                <NavLink to="/discussion" className={({ isActive }) => isActive ? 'menu-link menu-link-active' : 'menu-link'}>Discussion</NavLink>
+            </nav>
+            <div></div>
+            {
+                value ? <button className="btn-signup" onClick={logout}>Logout</button>
+                : <button className="btn-signup" onClick={() => navigate('/auth/register')}>Sign up</button>
+            }
+        </header>
     )
 }
