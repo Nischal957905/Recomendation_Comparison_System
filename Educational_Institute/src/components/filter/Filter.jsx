@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import FormControl from '@mui/material/FormControl';
-import { RiArrowDropDownLine } from 'react-icons/Ri'
+import { RiArrowDropDownLine } from 'react-icons/ri'
 import { Checkbox, Select, InputLabel, OutlinedInput, MenuItem, ListItemText } from "@mui/material";
 
 export default function Filter(props){

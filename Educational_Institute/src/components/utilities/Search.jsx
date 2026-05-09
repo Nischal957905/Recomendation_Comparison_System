@@ -1,4 +1,4 @@
-import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/Bi'
+import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/bi'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';

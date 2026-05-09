@@ -8,11 +8,11 @@ import { appSlice } from "../../app/api/appSlice"
 import React, { useEffect, useState } from "react"
 import '../../index.css'
 import Button from '@mui/material/Button'
-import { MdExpandMore } from 'react-icons/Md'
-import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/Bi'
-import { IoMdSettings } from 'react-icons/Io'
-import { RiArrowDropDownLine } from 'react-icons/Ri'
-import { GrFormNextLink } from 'react-icons/Gr'
+import { MdExpandMore } from 'react-icons/md'
+import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/bi'
+import { IoMdSettings } from 'react-icons/io'
+import { RiArrowDropDownLine } from 'react-icons/ri'
+import { GrFormNextLink } from 'react-icons/gr'
 import { PiNumberOneBold as One,
         PiNumberTwoBold as Two,
         PiNumberThreeBold as Three,
@@ -22,7 +22,7 @@ import { PiNumberOneBold as One,
         PiNumberSevenBold as Seven,
         PiNumberEightBold as Eight,
         PiNumberNineBold as Nine,
-        PiNumberZeroBold as Zero } from 'react-icons/Pi'
+        PiNumberZeroBold as Zero } from 'react-icons/pi'
 // import Institution from "./Institution"
 
 import Filter from "../../components/filter/Filter"
