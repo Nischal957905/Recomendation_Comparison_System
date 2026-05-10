@@ -1,440 +1,1070 @@
-*{
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
+:root {
+  color: #172033;
+  background: #f7f8fb;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --surface-soft: #eef4f1;
+  --ink: #172033;
+  --muted: #657084;
+  --line: #dce3ea;
+  --primary: #1f6f5b;
+  --primary-dark: #145343;
+  --accent: #d58936;
+  --shadow: 0 18px 55px rgba(23, 32, 51, 0.09);
 }
 
-/*This is the css styling for the header of the layout page*/
-.header-user{
-    background-color: #2E2929;
-    display: grid;
-    grid-template-columns: 6fr 3.8fr 2fr 1fr;
+* {
+  box-sizing: border-box;
 }
 
-/*This is the css styling for the logo of the layout page*/
-.logo-con{
-    height: 40px;
-    width: 180px;
-    padding: 18px 26px;
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(31, 111, 91, 0.08), transparent 34rem),
+    linear-gradient(180deg, #fbfcfd 0%, var(--bg) 34rem);
 }
 
-/*This is the css styling for the image inside teh logo of the layout page*/
-.logo-con > img{
-    height: 42px;
-    width: 180px;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/*This is the css styling for the signup button of the layout page*/
-.btn-signup{
-    height: 34px;
-    width: 100px;
-    font-size: 15px;
-    font-weight: bold;
-    color: white;
-    background-color: #7D3F5D;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    cursor: pointer;
-    margin: 18px 26px;
+button {
+  border: 0;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 40px;
+  padding: 0 16px;
 }
 
-/*This is the css styling for the layout of the listing page*/
-.layout{
-    display: flex;
+button:hover,
+.primary-action:hover {
+  background: var(--primary-dark);
 }
 
-/*This is the css styling for the menu of the listing page*/
+input,
+textarea,
+select {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font: inherit;
+  min-height: 42px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.body-part {
+  min-height: calc(100vh - 76px);
+}
+
+.header-user {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 20px;
+  grid-template-columns: auto 1fr auto;
+  min-height: 76px;
+  padding: 14px clamp(18px, 5vw, 72px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(14px);
+}
+
+.logo-con {
+  align-items: center;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--primary-dark);
+  display: flex;
+  font-size: 24px;
+  font-weight: 900;
+  height: 48px;
+  letter-spacing: 0;
+  padding: 0;
+  width: 174px;
+}
+
 .menu-holder {
-    display: flex;
-    height: 70px;
-    align-items: center;
-    justify-content: space-around;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
 }
 
-/*This is the css styling for the menu container of the listing page*/
-.menu-holder > div{
-    font-size: 14px;
-    font-weight: 400;
-    color: #FFFFFF;
+.menu-holder > a {
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 9px 12px;
 }
 
-/*This is the css styling for the lists inside menu of the listing page*/
+.menu-holder > a:hover,
 .list-menu {
-    text-decoration: underline;
+  background: var(--surface-soft);
+  color: var(--primary-dark);
 }
 
-/*This is the css styling for the search button of the listing page*/
-.search-holder{
-    margin-top: 65px;
-    padding-left: 60px;
+.btn-signup {
+  white-space: nowrap;
 }
 
-/*This is the css styling for the search bar of the listing page*/
-.search-bar{
-    height: 40px;
-    display: flex;
-    align-items: center;
-    width: 55vw;
-    background-color: black;
-    border-radius: 6px;
-    padding: 0px 15px;
+.home-page,
+.comparison-page,
+.detail-page,
+.auth-page,
+.page-intro {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: clamp(28px, 5vw, 64px) clamp(18px, 5vw, 56px);
 }
 
-/*This is the css styling for the tect inside search bar of the listing page*/
-.search-bar > p{
-    color: #FFFFFF;
-    margin-left: auto;
-    font-size: 12px;
+.hero-section {
+  align-items: stretch;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
 }
 
-/*This is the css styling for the search of the listing page*/
-.search-icon{
-    color: white;
+.hero-copy h1,
+.page-intro h1,
+.detail-title h1,
+.auth-panel h1 {
+  color: var(--ink);
+  font-size: clamp(34px, 6vw, 64px);
+  letter-spacing: 0;
+  line-height: 1.02;
+  margin: 10px 0 18px;
 }
 
-/*This is the css styling for the filters of the listing page*/
-.filter-con{
-    display: flex;
-    width: 56vw;
-    align-items: center;
-    margin:30px 0px 0px 65px;
+.hero-copy p,
+.page-intro p,
+.detail-title p,
+.auth-panel p {
+  color: var(--muted);
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 720px;
 }
 
-/*This is the css styling for the filter of the listing page*/
-.filter-con > div{
-    padding: 5px;
-    font-size: 14px;
-    font-weight: 600;
+.eyebrow {
+  color: var(--primary);
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
-.filter-con > form{
-    display: flex;
-    padding: 5px;
-    font-size: 14px;
-    font-weight: 600;
-    align-items: center;
-    justify-content: space-between;
+.hero-actions,
+.control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
 }
 
-.filter-con > form > div{
-    margin-right: 12px;
-} 
-
-.filter-showcase{
-    
+.primary-action,
+.secondary-action {
+  align-items: center;
+  border-radius: 8px;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
 }
 
-.filter-country > div{
-
+.primary-action {
+  background: var(--primary);
+  color: #fff;
 }
 
-/*This is the css styling for the filter setting of the listing page*/
-.filter-settings{
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #7D3F5D;
-    border-radius: 5px;
-    color: white;
+.secondary-action {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
 }
 
+.hero-panel,
+.category-card,
+.info-panel,
+.auth-panel,
+.comparable-items {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  padding: 18px;
+}
+
+.hero-metric {
+  background: var(--surface-soft);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.hero-metric strong {
+  color: var(--primary-dark);
+  display: block;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.hero-metric span,
+.category-card p,
+.value-list p,
+.info-panel p,
+.feature-holder-in li,
+.features-comparison li {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.hero-metric.wide {
+  grid-column: 1 / -1;
+}
+
+.category-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 34px;
+}
+
+.category-card {
+  padding: 24px;
+}
+
+.category-card svg {
+  color: var(--accent);
+  font-size: 26px;
+}
+
+.category-card h2,
+.content-band h2,
+.info-panel h2,
+.feature-holder-in h2,
+.post-review h2,
+.totalPoints h2 {
+  color: var(--ink);
+  margin: 10px 0;
+}
+
+.content-band {
+  align-items: start;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 0.8fr 1.2fr;
+  margin-top: 48px;
+  padding-top: 36px;
+}
+
+.value-list {
+  display: grid;
+  gap: 12px;
+}
+
+.layout {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  margin: 0 auto;
+  max-width: 1260px;
+  padding: 22px clamp(16px, 4vw, 46px) clamp(24px, 4vw, 46px);
+}
+
+.listing-intro {
+  margin: 0 auto;
+  max-width: 1260px;
+  padding: clamp(28px, 5vw, 52px) clamp(16px, 4vw, 46px) 0;
+}
+
+.listing-intro h1 {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.06;
+  margin: 8px 0 12px;
+  max-width: 860px;
+}
+
+.listing-intro p {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 760px;
+}
+
+.left-div,
+.right-div {
+  min-width: 0;
+}
+
+.search-shell {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  margin-bottom: 22px;
+}
+
+.search-bars {
+  background: #fff;
+  border-radius: 8px;
+}
+
+.dasdsa {
+  align-items: center;
+  background: var(--primary);
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  height: 54px;
+  justify-content: center;
+}
+
+.search-query {
+  font-size: 24px;
+}
+
+.filter-con,
+.filter-con > form {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-con {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.menu-showcase button,
+.filter-settings {
+  align-items: center;
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+  display: inline-flex;
+  gap: 6px;
+}
+
+.filter-settings {
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 800;
+  min-height: 40px;
+  padding: 0 12px;
+}
 
 .filter-settings > p {
-    padding: 0px 5px;
-    margin-right: 10px;
-    font-size: 11px;
-    font-weight: 600;
+  margin: 0;
 }
 
-/*This is the css styling for the div that holds the number of insitituions of the listing page*/
-.result-counter{
-    display: flex;
-    width: 56vw;
-    margin:30px 0px 0px 65px;
+.menu-showcase {
+  position: relative;
 }
 
-/*This is the css styling for the div that holds the text of insitituions of the listing page*/
-.result-counter > p{
-    font-size: 14px;
-    font-weight: 700;
-    padding-left: 5px;
-} 
-
-/*This is the css styling the sorting icon of the listing page*/
-.sort-icon{
-    margin-left: auto;
+.filter-showcase {
+  position: relative;
 }
 
-/*This is the css styling for the div that holds insitituions of the listing page*/
-.item-container{
-    display: flex;
-    flex-wrap: wrap;
-    width: 56vw;
-    margin:30px 0px 0px 65px;
+.menu-options {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 8px;
+  left: 0;
+  min-width: 230px;
+  padding: 12px;
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 10;
 }
 
-/*This is the css styling for insitituions of the listing page*/
-.child-items{
-    height: 170px;
-    width: 25vw;
-    margin-bottom: 35px;
-    background-color: aliceblue;
-    border-radius: 10px;
+.menu-options label,
+.filter-item-strap {
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }
 
-.item-container > div:nth-child(even) {
-    margin-left: auto;
+.menu-options input {
+  min-height: auto;
+  width: auto;
 }
 
-/*This is the css styling for the div that holds the images of insitituions of the listing page*/
+.result-counter {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 24px 0 16px;
+}
+
+.result-counter > p {
+  font-weight: 800;
+  margin: 0;
+}
+
+.sort-icon {
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.item-container {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.child-items {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(23, 32, 51, 0.07);
+  min-width: 0;
+  overflow: hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.child-items:hover {
+  box-shadow: 0 16px 42px rgba(23, 32, 51, 0.12);
+  transform: translateY(-2px);
+}
+
 .img-holder {
-    height: 130px;
-    width: 25vw;
-    border-radius: 10px 10px 0px 0px;
-    overflow: hidden;
-    border-top: solid black 1px;
-    border-left: solid black 1px;
-    border-right: solid black 1px;
-}
-  
-/*This is the css styling for the div that holds the image of insitituions of the listing page*/
-.logo-img{
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
+  aspect-ratio: 16 / 9;
+  background: var(--surface-soft);
+  overflow: hidden;
 }
 
-/*This is the css styling for the div that holds the name of insitituions of the listing page*/
-.name-holder{
-    height: 40px;
-    width: 25vw;
-    font-size: 14px;
-    background-color: black;
-    border-radius: 0px 0px 10px 10px;
-    color: white;
-    border: solid black 1px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+.logo-img,
+.back-logo-img,
+.comaparable-img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
-/*This is the css styling for the div that holds the link icon of insitituions of the listing page*/
-.link-institution{
-    font-size: 20px;
-    background-color: #FFFFFF;
+.name-holder {
+  align-items: center;
+  display: flex;
+  font-weight: 800;
+  gap: 14px;
+  justify-content: space-between;
+  min-height: 62px;
+  padding: 12px 14px;
 }
 
-/*This is the css styling reating menu of the listing page*/
-.rating-menu{
-    display: flex;
-    padding-top: 18vh;
+.link-institution {
+  background: var(--surface-soft);
+  border-radius: 50%;
+  color: var(--primary-dark);
+  font-size: 26px;
 }
 
-/*This is the css styling for the div that holds the top rated institutions of listing page*/
-.top-holder{
-    font-size: 18px;
-    font-weight: bold;
-    padding:0 2rem;
+.right-div {
+  align-self: start;
+  position: sticky;
+  top: 96px;
 }
 
-
-/*This is the css styling for the div that holds the top rated institutions of listing page*/
-.top-rating{
-    font-size: 14px;
-    font-weight: 500;
-    background-color: #F6E3E6;
-    display: flex;
-    align-items: center;
-    border-radius: 3px 0px 0px 3px;
-    padding: 3px 8px;
-    box-shadow: 1px 1px 3px 1px #675457;
+.rating-menu {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-
-/*This is the css styling for the div that holds the top rated institutions based on performance of listing page*/
-.top-performance{
-    font-size: 14px;
-    font-weight: 500;
-    background-color: #7D3F5D;
-    border-left: solid 1px #562a3f;
-    border-right:solid 1px #562a3f;
-    display: flex;
-    align-items: center;
-    padding: 3px 8px;
-    box-shadow: 1px 1px 3px 1px #675457;
+.top-holder {
+  flex-basis: 100%;
+  font-size: 20px;
+  font-weight: 900;
 }
 
-
-/*This is the css styling for the div that holds the top rated institutions based on ranking of listing page*/
-.top-rank{
-    font-size: 14px;
-    font-weight: 500;
-    background-color: #F6E3E6;
-    display: flex;
-    align-items: center;
-    border-radius: 0px 3px 3px 0px;
-    padding: 3px 8px;
-    box-shadow: 1px 1px 3px 1px #675457;
+.top-rating,
+.top-performance,
+.top-rank {
+  background: var(--surface-soft);
+  border-radius: 8px;
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 7px 10px;
 }
 
-
-/*This is the css styling for the div that holds the top rated institutions based on rating of listing page*/
-.top-rated{
-    padding-left: 32px;
-    padding-top: 4rem;
-    margin-right: 2vw;
+.top-rated {
+  display: grid;
+  gap: 10px;
 }
 
-
-.info-top{
-    display: flex;
-    margin-bottom: 15px;
+.ranking-performance {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.ranking-performance{
-    display: flex;
-    height: 90px;
+.info-top {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 72px 1fr;
 }
 
-.logo-top{
-    border-radius: 10px 0px 0px 10px;
-    border: solid 1px #562a3f;
+.logo-top {
+  aspect-ratio: 1;
+  height: 72px;
+  object-fit: cover;
+  width: 72px;
 }
 
-.line-top{
-    border-left: solid 2px black;
-    margin-right: 2vw;
+.info-top-rated {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
 }
 
-.info-top-rated{
-    background-color: #D9D9D9;
-    display: flex;
-    width: 23vw;
-    border-radius: 0px 10px 10px 0px;
-    align-items: center;
+.ranking-number,
+.ranking-topten {
+  color: var(--accent);
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 26px;
+  line-height: 1;
 }
 
-.ranking-number{
-    font-size: 60px;
-    padding-top: 1rem;
+.ranking-ten {
+  margin-left: -12px;
 }
 
-.ranking-topten{
-    display: flex;
-    font-size: 60px;
-    padding-top: 1rem;
+.ranked-names {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0;
 }
 
-.ranking-ten{
-    padding-top: 2px;
-    margin-left: -2rem;
-    font-size: 55px;
+.detail-hero {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
 }
 
-.ranked-names{
-    font-size: 14px;
+.img-back-logo-holder {
+  aspect-ratio: 4 / 3;
+  background: var(--surface-soft);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
-
-
-.filter-select-fix{
-    display: flex;
+.fields-holder {
+  align-content: start;
+  display: grid;
+  gap: 12px;
 }
 
-.filter-check .MuiSvgIcon-root{
-    font-size: 14px;
+.fields-holder > div:not(.detail-title) {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-weight: 800;
+  padding: 14px 16px;
 }
 
-.filter-list{
-    font-size: 8px;
+.detail-content,
+.review-grid,
+.comparable-item-box {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin-top: 28px;
 }
 
-.make-it{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+.info-panel,
+.feature-holder-in,
+.post-review {
+  padding: 22px;
 }
 
-.filter-item-strap{
-    display: flex;
-    align-items: center;
+.feature-holder-in ul,
+.features-comparison ul {
+  margin: 12px 0 0;
+  padding-left: 20px;
+}
+
+.map-section {
+  border-radius: 8px;
+  margin-top: 28px;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.post-review {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 28px;
+}
+
+.post-review form,
+.auth-panel form {
+  display: grid;
+  gap: 14px;
+}
+
+.review,
+.rating,
+.login-username,
+.login-password,
+.auth-panel form > div {
+  display: grid;
+  gap: 7px;
+}
+
+.each-review {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.compare-controls {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+  padding: 20px;
+}
+
+.comparison-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.comparison-summary {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 24px;
+}
+
+.summary-card {
+  background:
+    linear-gradient(135deg, rgba(31, 111, 91, 0.1), rgba(213, 137, 54, 0.08)),
+    #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 16px 42px rgba(23, 32, 51, 0.09);
+  min-height: 150px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::after {
+  background: var(--primary);
+  border-radius: 999px;
+  content: "";
+  height: 7px;
+  left: 20px;
+  position: absolute;
+  right: 20px;
+  top: 0;
+}
+
+.summary-card strong {
+  color: var(--ink);
+  display: block;
+  font-size: 18px;
+}
+
+.summary-card span {
+  color: var(--primary-dark);
+  display: block;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-top: 8px;
+}
+
+.summary-card p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 10px 0 0;
+}
+
+.select-comparison {
+  width: 100%;
+}
+
+.chart-section {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 24px;
+  overflow-x: auto;
+  padding: 20px;
+  box-shadow: 0 12px 34px rgba(23, 32, 51, 0.07);
+}
+
+.modern-chart {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 18px 48px rgba(23, 32, 51, 0.08);
+  margin-top: 24px;
+  overflow: hidden;
+}
+
+.modern-chart-head {
+  align-items: end;
+  background: linear-gradient(135deg, rgba(31, 111, 91, 0.1), rgba(213, 137, 54, 0.08));
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.6fr);
+  padding: 22px;
+}
+
+.modern-chart-head h2 {
+  color: var(--ink);
+  font-size: clamp(22px, 3vw, 30px);
+  margin: 6px 0 0;
+}
+
+.modern-chart-head p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.modern-chart-grid {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.modern-metric {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(170px, 0.32fr) minmax(0, 1fr);
+  padding: 16px;
+}
+
+.modern-metric-title h3 {
+  color: var(--ink);
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+.modern-metric-title span {
+  color: var(--muted);
+  display: block;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.modern-bars {
+  display: grid;
+  gap: 12px;
+}
+
+.modern-bar-row {
+  display: grid;
+  gap: 8px;
+}
+
+.modern-bar-meta {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+}
+
+.modern-bar-meta span {
+  align-items: center;
+  background: var(--surface-soft);
+  border-radius: 999px;
+  color: var(--primary-dark);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 900;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+
+.modern-bar-meta strong {
+  color: var(--ink);
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modern-bar-meta em {
+  color: var(--primary-dark);
+  font-style: normal;
+  font-weight: 900;
+}
+
+.modern-bar-track {
+  background: #eef2f5;
+  border-radius: 999px;
+  height: 13px;
+  overflow: hidden;
+}
+
+.modern-bar-track i {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+.comparable-items {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-color: rgba(31, 111, 91, 0.18);
+}
+
+.comaparable-img {
+  aspect-ratio: 16 / 9;
+}
+
+.totalPoints,
+.features-comparison {
+  padding: 20px;
+}
+
+.features-comparison {
+  background: #f9fbfa;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.features-comparison h3 {
+  color: var(--ink);
+  font-size: 15px;
+  margin: 0 0 10px;
+}
+
+.features-comparison > div {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.score-total {
+  align-items: baseline;
+  color: var(--primary-dark);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 34px;
+  font-weight: 900;
+  gap: 8px;
+  line-height: 1;
+  margin: 12px 0 18px;
+}
+
+.score-total span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.metric-row {
+  background: var(--surface-soft);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr auto;
+  margin-top: 10px;
+  overflow: hidden;
+  padding: 11px 12px 13px;
+  position: relative;
+}
+
+.metric-row span,
+.metric-row strong {
+  position: relative;
+  z-index: 1;
+}
+
+.metric-row span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.metric-row strong {
+  color: var(--ink);
+}
+
+.metric-row i {
+  background: linear-gradient(90deg, rgba(31, 111, 91, 0.24), rgba(213, 137, 54, 0.22));
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.auth-page {
+  display: grid;
+  min-height: calc(100vh - 76px);
+  place-items: center;
+}
+
+.auth-panel {
+  max-width: 520px;
+  padding: 28px;
+  width: 100%;
+}
+
+.main-pop-con {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.pop-menu-items,
+.pop-menu-div {
+  background: #fff;
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.comparable-item-box {
+  align-items: start;
 }
 
 .MuiInputLabel-root {
-    font-size: 14px !important;
+  font-size: 14px !important;
 }
 
+@media (max-width: 980px) {
+  .header-user {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
 
-.menu-showcase{
-    position: relative;
+  .hero-section,
+  .content-band,
+  .layout,
+  .detail-hero,
+  .detail-content,
+  .review-grid,
+  .comparable-item-box {
+    grid-template-columns: 1fr;
+  }
+
+  .right-div {
+    position: static;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
 }
-.menu-options{
-    position: absolute;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    background-color: #675457;
-    padding: 10px;
-}
 
+@media (max-width: 640px) {
+  .home-page,
+  .comparison-page,
+  .detail-page,
+  .auth-page,
+  .page-intro,
+  .layout {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
 
+  .hero-panel,
+  .item-container,
+  .features-comparison {
+    grid-template-columns: 1fr;
+  }
 
+  .hero-copy h1,
+  .page-intro h1,
+  .detail-title h1,
+  .auth-panel h1 {
+    font-size: 34px;
+  }
 
-
-
-/*
-Css for the Pop up menus.
-*/
-
-.main-pop-con{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  .filter-con,
+  .filter-con > form,
+  .filter-con > form > div,
+  .filter-settings,
+  .control-actions button {
     width: 100%;
+  }
+
+  .menu-holder {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    width: 100%;
+  }
+
+  .btn-signup {
+    width: 100%;
+  }
+
+  .modern-chart-head,
+  .modern-metric {
+    grid-template-columns: 1fr;
+  }
+
+  .modern-bar-meta {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .modern-bar-meta em {
+    grid-column: 2;
+  }
 }
-
-.pop-menu-items{
-    display: flex;
-    width: max-content;
-    flex-direction: column;
-    padding: 10px;
-}
-
-.pop-menu-items > div {
-    margin-top: 10px;
-}
-
-.pop-menu-items > div > label {
-    margin-right: 10px;
-}
-
-.pop-menu-days-options{
-    height: 20px;
-    font-size: 10px;
-}
-
-.pop-menu-div{
-    width: max-content;
-    padding: 20px;
-}
-
-.pop-menu-div > button {
-    margin-right: 20px;
-}
-
-
-/*Comparable item*/
-.comparable-item-box{
-    display: flex;
-    flex-direction: row;
-}
-
-
-
-
-
-
-
-
-

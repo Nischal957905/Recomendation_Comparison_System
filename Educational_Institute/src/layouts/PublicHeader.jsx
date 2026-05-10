@@ -1,4 +1,4 @@
-import { useNavigate} from "react-router-dom"
+import { Link, useNavigate} from "react-router-dom"
 
 export default function PublicHeader() {
 
@@ -12,18 +12,19 @@ export default function PublicHeader() {
     return (
         <>
             <header className="header-user">
-                <div className="logo-con">
-                    <img src='/logo.png'></img>
-                </div>
-                <div className="menu-holder">
-                    <div className="home-menu">Home</div>
-                    <div className="list-menu">Listings</div>
-                    <div className="compare-menu">Comparison</div>
-                </div>
-                <div></div>
+                <Link className="logo-con" to="/">
+                    Consult Me
+                </Link>
+                <nav className="menu-holder" aria-label="Primary navigation">
+                    <Link className="home-menu" to="/">Home</Link>
+                    <Link className="list-menu" to="/institution">Listings</Link>
+                    <Link to="/college">Colleges</Link>
+                    <Link to="/school">Schools</Link>
+                    <Link className="compare-menu" to="/comparison">Comparison</Link>
+                </nav>
                 {
-                    value ?  <div className="btn-signup" onClick={logout}>Logout</div>
-                    :<div className="btn-signup">Sign up</div>
+                    value ?  <button className="btn-signup" onClick={logout}>Logout</button>
+                    :<button className="btn-signup" onClick={() => navigate('/auth/register')}>Sign up</button>
 
                 }
             </header>

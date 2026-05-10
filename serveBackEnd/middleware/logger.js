@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
-import { promises as fsPromises, existsSync, mkdir } from 'fs';
+import { promises as fsPromises, existsSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,7 +15,7 @@ const eventLogs = async (message, logFileName) => {
   try {
     const logsDir = join(__dirname, '..', 'logs');
     if (!existsSync(logsDir)) {
-      await mkdir(logsDir);
+      await fsPromises.mkdir(logsDir, { recursive: true });
     }
     await fsPromises.appendFile(join(logsDir, logFileName), dateLogs);
   } catch (error) {

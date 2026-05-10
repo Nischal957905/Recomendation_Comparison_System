@@ -33,5 +33,11 @@ export const comparisonSlice = createApi({
 })
 
 export const {
-    useGetComparisonsQuery, useGetCompanyQuery, useGetComparisonCollegeQuery, useGetComparisonSchoolQuery
+    useGetComparisonsQuery,
+    useLazyGetComparisonsQuery,
+    useGetCompanyQuery,
+    useGetComparisonCollegeQuery,
+    useLazyGetComparisonCollegeQuery,
+    useGetComparisonSchoolQuery,
+    useLazyGetComparisonSchoolQuery,
 } = comparisonSlice

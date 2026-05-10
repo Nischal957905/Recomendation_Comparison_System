@@ -63,7 +63,10 @@ export default function Login(){
     }
     
     return (
-        <div>
+        <main className="auth-page">
+            <section className="auth-panel">
+                <span className="eyebrow">Welcome back</span>
+                <h1>Log in to continue comparing and reviewing institutions.</h1>
             <form onSubmit= {handleSubmit} >
                     <div className="login-username">
                         <label>Username:</label>
@@ -85,6 +88,7 @@ export default function Login(){
                     </div>
                 <button>Login</button>
             </form>
-        </div>
+            </section>
+        </main>
     )
 }

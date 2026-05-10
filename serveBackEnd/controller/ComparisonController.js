@@ -5,60 +5,70 @@ import Review from '../models/Review.js'
 import handleAsync from 'express-async-handler'
 import * as turf from '@turf/turf'
 
+const toNumber = (value, fallback = 0) => {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : fallback
+}
+
+const safeDivide = (value, divisor) => divisor === 0 ? 0 : value / divisor
+
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key)
+
 const servicePointHandler = (university,country, speciality, totalUni, totalCountry, totalSpecial, count) => {
-    let points = 0;
-    const universityAverage = totalUni / count;
-    const countryAverage = totalCountry / count;
-    const specialAverage = totalSpecial/count;
+    const universityValue = toNumber(university)
+    const countryValue = toNumber(country)
+    const specialityValue = toNumber(speciality)
+    const universityAverage = safeDivide(totalUni, count);
+    const countryAverage = safeDivide(totalCountry, count);
+    const specialAverage = safeDivide(totalSpecial, count);
 
     const percentUniversity = universityAverage * .45;
     const percentCountry = countryAverage * .35;
     const percentSpecial = specialAverage * .20;
 
-    points = (percentCountry * country / countryAverage) + 
-        (percentUniversity * university / universityAverage) +
-        (percentSpecial * speciality / specialAverage)
+    const points = safeDivide(percentCountry * countryValue, countryAverage) + 
+        safeDivide(percentUniversity * universityValue, universityAverage) +
+        safeDivide(percentSpecial * specialityValue, specialAverage)
 
     return points * 20;
 }
 
 const experiencePointHandler = (totalExp, totalSucess, exp, success, count) => {
-    let points;
-    const expPoint = exp === "" ? 0 : exp
-    const successPoints = success === "" ? 0 : success
+    const expPoint = toNumber(exp)
+    const successPoints = toNumber(success)
 
-    const expAverage = totalExp / count;
-    const successAverage = totalSucess / count;
+    const expAverage = safeDivide(totalExp, count);
+    const successAverage = safeDivide(totalSucess, count);
 
     const percentExp = expAverage * .50;
     const percentSuccess = successAverage * .50;
 
-    points = (percentExp * exp / expAverage) + (percentSuccess * success / successAverage)
+    const points = safeDivide(percentExp * expPoint, expAverage) + safeDivide(percentSuccess * successPoints, successAverage)
 
     return points * 20;
 }
 
 const experienceCollegePointHandler = (totalExp, exp,count, ugc) => {
-    let points;
-    const expPoint = exp === "" ? 0 : exp
+    const expPoint = toNumber(exp)
     const ugcPoint = ugc === " ✓ UGC Accredited" ? 13 : 3
 
-    const expAverage = totalExp / count;
+    const expAverage = safeDivide(totalExp, count);
 
     const percentExp = expAverage * .70;
     const percentUgc = ugcPoint * .30;
 
-    points = (percentExp * exp / expAverage) + (percentUgc)
+    const points = safeDivide(percentExp * expPoint, expAverage) + (percentUgc)
 
     return points * 20;
 }
 
 const timeManipulator = (time) => {
-    if(time.includes(":")){
-        return parseInt(time.split(":")[0])
+    const safeTime = String(time || "9")
+    if(safeTime.includes(":")){
+        return parseInt(safeTime.split(":")[0])
     }
     else{
-        return parseInt(time)
+        return parseInt(safeTime)
     }
 }
 
@@ -77,7 +87,7 @@ const accessPointHandler = (opTime, clTime, online, platform) => {
 
         const onlinePoints = online === true ? 5 : 2;
         const pointsOnline = onlinePoints * 2.5;
-        const platformPoints = platform === 'Gobal' ? 5 : 2;
+        const platformPoints = platform === 'Global' ? 5 : 2;
         const pointsPlatform = platformPoints * 2.5;
         return pointsOnline + operatingPoints + pointsPlatform;
     }
@@ -164,14 +174,17 @@ const getComparisonList = handleAsync(async (req, res) => {
     }
 
     if(!checkValue){
-        res.status(405).json({ error: 'Empty Value not accepted.' });
+        return res.status(405).json({ error: 'Empty Value not accepted.' });
     }
 
     if(Object.keys(insObject).length !== 0 && checkValue){
         for(let iterator in insObject){
-            if(insObject.hasOwnProperty(iterator)){
+            if(hasOwn(insObject, iterator)){
                 const comparisonInstitution = await Institution.find(
                     {name: insObject[iterator]}).select().lean()
+                if(!comparisonInstitution[0]){
+                    return res.status(404).json({ error: `Institution not found: ${insObject[iterator]}` })
+                }
                 fullObject.push(comparisonInstitution[0])
 
                 const reviews = await Review.find({
@@ -185,19 +198,11 @@ const getComparisonList = handleAsync(async (req, res) => {
     if(fullObject.length > 0 && checkValue){
         fullObject.forEach((item,index) => {
             
-            totalUniPoint += item.universities
-            totalCountryCount += item.countries.length
-            totalSpecialCount += item.specialization.length
-            if(item.experience === ""){
-                totalExpPoint = totalExpPoint + 0;
-            }
-            if(item.success === ""){
-                totalSucessPoint = totalSucessPoint + 0;
-            }
-            else if(item.experience !== "" || item.success !== ""){
-                totalExpPoint += item.experience;
-                totalSucessPoint += item.success;
-            }
+            totalUniPoint += toNumber(item.universities)
+            totalCountryCount += Array.isArray(item.countries) ? item.countries.length : 0
+            totalSpecialCount += Array.isArray(item.specialization) ? item.specialization.length : 0
+            totalExpPoint += toNumber(item.experience)
+            totalSucessPoint += toNumber(item.success)
         });
     }
     
@@ -210,8 +215,8 @@ const getComparisonList = handleAsync(async (req, res) => {
             )
             const servicePoint = servicePointHandler(
                 item.universities, 
-                item.countries.length, 
-                item.specialization.length, 
+                Array.isArray(item.countries) ? item.countries.length : 0, 
+                Array.isArray(item.specialization) ? item.specialization.length : 0, 
                 totalUniPoint,
                 totalCountryCount,
                 totalSpecialCount,
@@ -283,14 +288,17 @@ const getCollegeComparisonList = handleAsync(async (req, res) => {
     }
 
     if(!checkValue){
-        res.status(405).json({ error: 'Empty Value not accepted.' });
+        return res.status(405).json({ error: 'Empty Value not accepted.' });
     }
 
     if(Object.keys(insObject).length !== 0 && checkValue){
         for(let iterator in insObject){
-            if(insObject.hasOwnProperty(iterator)){
+            if(hasOwn(insObject, iterator)){
                 const comparisonInstitution = await College.find(
                     {name: insObject[iterator]}).select().lean()
+                if(!comparisonInstitution[0]){
+                    return res.status(404).json({ error: `College not found: ${insObject[iterator]}` })
+                }
                 fullObject.push(comparisonInstitution[0])
 
                 const reviews = await Review.find({
@@ -303,12 +311,7 @@ const getCollegeComparisonList = handleAsync(async (req, res) => {
     
     if(fullObject.length > 0 && checkValue){
         fullObject.forEach(item => {
-            if(item.experience === ""){
-                totalExpPoint = totalExpPoint + 0;
-            }
-            else if(item.experience !== ""){
-                totalExpPoint += item.experience;
-            }
+            totalExpPoint += toNumber(item.experience)
         });
     }
     
@@ -381,14 +384,17 @@ const getSchoolComparisonList = handleAsync(async (req, res) => {
     }
 
     if(!checkValue){
-        res.status(405).json({ error: 'Empty Value not accepted.' });
+        return res.status(405).json({ error: 'Empty Value not accepted.' });
     }
 
     if(Object.keys(insObject).length !== 0 && checkValue){
         for(let iterator in insObject){
-            if(insObject.hasOwnProperty(iterator)){
+            if(hasOwn(insObject, iterator)){
                 const comparisonInstitution = await School.find(
                     {name: insObject[iterator]}).select().lean()
+                if(!comparisonInstitution[0]){
+                    return res.status(404).json({ error: `School not found: ${insObject[iterator]}` })
+                }
                 fullObject.push(comparisonInstitution[0])
 
                 const reviews = await Review.find({
@@ -401,12 +407,7 @@ const getSchoolComparisonList = handleAsync(async (req, res) => {
     
     if(fullObject.length > 0 && checkValue){
         fullObject.forEach(item => {
-            if(item.experience === ""){
-                totalExpPoint = totalExpPoint + 0;
-            }
-            else if(item.experience !== ""){
-                totalExpPoint += item.experience;
-            }
+            totalExpPoint += toNumber(item.experience)
         });
     }
     

@@ -75,7 +75,10 @@ export default function Register(){
 
 
     return (
-        <div>
+        <main className="auth-page">
+            <section className="auth-panel">
+                <span className="eyebrow">Create account</span>
+                <h1>Save your location preferences and contribute useful institution reviews.</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Username</label>
@@ -119,6 +122,7 @@ export default function Register(){
                 </div>
                 <button>Register</button>
             </form>
-        </div>
+            </section>
+        </main>
     )
 }

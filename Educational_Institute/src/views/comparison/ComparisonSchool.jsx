@@ -1,35 +1,27 @@
-import { useGetComparisonSchoolQuery } from "../../app/api/comparisonSlice"
+import { useGetComparisonSchoolQuery, useLazyGetComparisonSchoolQuery } from "../../app/api/comparisonSlice"
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import InstitutionImage from "../../components/utilities/InstitutionImage";
 
 import MessageProp from "../../components/utilities/MessageProp";
-//Tabs
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-
-//Barchart
-import { Bar } from 'react-chartjs-2'
-import { BarChart} from '@mui/x-charts'
+import ModernComparisonChart from "../../components/comparison/ModernComparisonChart";
 
 
 export default function ComparisonSchool() {
 
     const [selectedInstitution, setSelectedInstitution] = useState({});
-    const [delayedValue, setDelayedValue] = useState()
+    const [comparisonResult, setComparisonResult] = useState(null);
+    const { data: optionsData } = useGetComparisonSchoolQuery({})
+    const [trigger, { data }] = useLazyGetComparisonSchoolQuery()
 
-    const {
-        data: institutionData,
-        isSuccess,
-        error
-    } = useGetComparisonSchoolQuery(delayedValue)
+    const scoreObject = comparisonResult?.scoreObject || []
 
-
-    const {scoreObject} = institutionData ? institutionData : []
+    const toScore = (value) => {
+        const number = Number(value);
+        return Number.isFinite(number) ? Math.round(number * 10) / 10 : 0;
+    }
 
     let experienceArray = [];
     let accessArray = [];
@@ -51,7 +43,7 @@ export default function ComparisonSchool() {
         });
     }
 
-    const institutionsName  = institutionData ? institutionData.institutionsName: [];
+    const institutionsName  = comparisonResult?.institutionsName || data?.institutionsName || optionsData?.institutionsName || [];
     
     const [count, setCount] = useState(0);
 
@@ -87,13 +79,6 @@ export default function ComparisonSchool() {
         })
     }
 
-    //Tab section
-    const [tabValue, setTabValue] = useState("1")
-    const tabSwappingHandler = (event, newVal) => {
-        setTabValue(newVal)
-    }
-
-    
     const addComparison = () => {
         if(count == 1){
             handleMessageType('Can not exceed the 3 institutions', 'error')
@@ -106,14 +91,24 @@ export default function ComparisonSchool() {
         }
     }
 
-    const handleClickCompare = () => {
+    const handleClickCompare = async () => {
         if(Object.keys(selectedInstitution).length > 1 && Object.keys(selectedInstitution).length < 4){
-            const objectLength = selectedInstitution.length;
             const check = checkValue(selectedInstitution)
             if(check){
-                setDelayedValue(selectedInstitution)
-                if(isSuccess){
-                    handleMessageType('Institution Successfuly compared!','success')
+                try {
+                    const result = await trigger(selectedInstitution).unwrap()
+                    const comparedItems = result?.scoreObject || []
+                    setComparisonResult(result)
+                    if(comparedItems.length > 0){
+                        handleMessageType('Comparison results loaded.','success')
+                        showPopMessage()
+                    }
+                    else {
+                        handleMessageType('No comparison data was returned for those selections.','error')
+                        showPopMessage()
+                    }
+                } catch (err) {
+                    handleMessageType('Error occurred','error')
                     showPopMessage()
                 }
             }
@@ -122,8 +117,8 @@ export default function ComparisonSchool() {
                 showPopMessage()
             }
         }
-        if(error){
-            handleMessageType('some error occured','error')
+        else {
+            handleMessageType('Select at least two institutions to compare.','error')
             showPopMessage()
         }
     }
@@ -133,13 +128,23 @@ export default function ComparisonSchool() {
     }
     
     return(
-        <div>
+        <main className="comparison-page">
             <MessageProp 
                 stateValue={messagePop}
                 destroy={destroyPopMessage}
                 messageType={display.severity}
                 message={display.message}
             />
+            <section className="page-intro">
+                <span className="eyebrow">School comparison</span>
+                <h1>Compare schools by experience, accessibility, rating, and total score.</h1>
+                <p>Select two or three schools to review academic profile signals, ownership details, distance, and score differences.</p>
+                <div className="comparison-switcher">
+                    <Link className="secondary-action" to="/comparison">Compare consultancies</Link>
+                    <Link className="secondary-action" to="/comparison/college">Compare colleges</Link>
+                </div>
+            </section>
+            <section className="compare-controls">
             <div>
                 <Autocomplete
                     disablePortal
@@ -178,116 +183,57 @@ export default function ComparisonSchool() {
                     </div>
                 ))
             }
-            <button onClick={addComparison}>Add+</button>
-            <button onClick={handleClickCompare}>Compare</button>
-            
-            <div>
-                {
-                    scoreObject &&
-                <Box>
-                    <TabContext value={tabValue}>
-                        <Box sx={{borderBottom:1, borderColor:"divider"}}>
-                            <TabList onChange={tabSwappingHandler}>
-                                <Tab value="1" label="Experience"/>
-                                <Tab value="2" label="Accessibility"/>
-                                <Tab value="3" label="Rating"/>
-                                <Tab value="4" label="Overall"/>
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'barCategories',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: experienceArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel>
-                        <TabPanel value="2">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'accessCategory',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: accessArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel>
-                        <TabPanel value="3">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'ratingCategories',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: ratingArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel>
-                        <TabPanel value="4">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'totalCategory',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: totalArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel> 
-                    </TabContext>
-                </Box>
-                }
+            <div className="control-actions">
+                <button onClick={addComparison}>Add institution</button>
+                <button onClick={handleClickCompare}>Compare</button>
             </div>
+            </section>
+            
+            {
+                scoreObject.length > 0 &&
+                <section className="comparison-summary">
+                    {scoreObject.map((item) => {
+                        const total = toScore(item.access) + toScore(item.experience) + toScore(item.review)
+                        return (
+                            <article className="summary-card" key={item.institution._id || item.institution.name}>
+                                <strong>{item.institution.name}</strong>
+                                <span>{toScore(total)} total points</span>
+                                <p>Experience {toScore(item.experience)} / Access {toScore(item.access)} / Rating {toScore(item.review)}</p>
+                            </article>
+                        )
+                    })}
+                </section>
+            }
+
+            {
+                scoreObject.length > 0 &&
+                <ModernComparisonChart
+                    title="School score comparison"
+                    metrics={[
+                        { label: "Overall", help: "Combined experience, access, and rating", values: scoreObject.map((item, index) => ({ name: item.institution.name, value: totalArray[index] })) },
+                        { label: "Experience", help: "Institution history and experience score", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.experience })) },
+                        { label: "Accessibility", help: "Operating hours and distance signal", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.access })) },
+                        { label: "Rating", help: "Review-based score", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.review })) },
+                    ]}
+                />
+            }
             {
                 
-                scoreObject &&
-                <div className="comparable-item-box">
+                scoreObject.length > 0 &&
+                <section className="comparable-item-box">
                     {
                         scoreObject.map((item,index) => {
-                            const imagesDirectory = `/images/${item.institution.name.replace(/ /g, "_")}`;
                             return(
                                 <div className="comparable-items" key={index}>
                                     <div>
-                                        <img src={`${imagesDirectory}.jpg`} className="comaparable-img"></img>
+                                        <InstitutionImage name={item.institution.name} category="school" className="comaparable-img" />
                                     </div>
                                     <div className="totalPoints">
-                                        <div>
-                                            Total point: {item.access + item.experience}
-                                        </div>
-                                        <div>
-                                            Experience score: {item.experience  !== null ? item.experience : 0}
-                                        </div>
-                                        <div>
-                                            Accesibility score: {item.access  !== null ? item.access : 0}
-                                        </div>
+                                        <h2>{item.institution.name}</h2>
+                                        <div className="score-total">{toScore(item.access) + toScore(item.experience) + toScore(item.review)}<span>total points</span></div>
+                                        <div className="metric-row"><span>Experience</span><strong>{toScore(item.experience)}</strong><i style={{width: `${Math.min(toScore(item.experience), 100)}%`}} /></div>
+                                        <div className="metric-row"><span>Accessibility</span><strong>{toScore(item.access)}</strong><i style={{width: `${Math.min(toScore(item.access), 100)}%`}} /></div>
+                                        <div className="metric-row"><span>Rating</span><strong>{toScore(item.review)}</strong><i style={{width: `${Math.min(toScore(item.review), 100)}%`}} /></div>
                                     </div>
                                     <div className="features-comparison">
                                         <div>
@@ -359,8 +305,8 @@ export default function ComparisonSchool() {
                             )
                         })
                     }
-                </div>
+                </section>
             }
-        </div>
+        </main>
     )
 }

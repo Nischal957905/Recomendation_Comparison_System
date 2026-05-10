@@ -10,8 +10,10 @@ export default function ComparisonPage(){
     } = useGetCompanyQuery(id)
 
     return(
-        <>
-        hello
-        </>
+        <main className="page-intro">
+            <span className="eyebrow">Comparison detail</span>
+            <h1>Institution comparison report</h1>
+            <p>This page is reserved for a saved comparison report. Use the comparison workspace to select institutions and review live scoring across service, access, experience, rating, and overall performance.</p>
+        </main>
     )
 }

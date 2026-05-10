@@ -1,4 +1,3 @@
-import { query } from 'express'
 import handleAsync from 'express-async-handler'
 import mongoose from 'mongoose'
 import Post from '../../models/Post.js'

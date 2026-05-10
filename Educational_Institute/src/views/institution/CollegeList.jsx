@@ -8,11 +8,11 @@ import { appSlice } from "../../app/api/appSlice"
 import React, { useEffect, useState } from "react"
 import '../../index.css'
 import Button from '@mui/material/Button'
-import { MdExpandMore } from 'react-icons/Md'
-import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/Bi'
-import { IoMdSettings } from 'react-icons/Io'
-import { RiArrowDropDownLine } from 'react-icons/Ri'
-import { GrFormNextLink } from 'react-icons/Gr'
+import { MdExpandMore } from 'react-icons/md'
+import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/bi'
+import { IoMdSettings } from 'react-icons/io'
+import { RiArrowDropDownLine } from 'react-icons/ri'
+import { GrFormNextLink } from 'react-icons/gr'
 import { PiNumberOneBold as One,
         PiNumberTwoBold as Two,
         PiNumberThreeBold as Three,
@@ -22,7 +22,7 @@ import { PiNumberOneBold as One,
         PiNumberSevenBold as Seven,
         PiNumberEightBold as Eight,
         PiNumberNineBold as Nine,
-        PiNumberZeroBold as Zero } from 'react-icons/Pi'
+        PiNumberZeroBold as Zero } from 'react-icons/pi'
 // import Institution from "./Institution"
 
 import Filter from "../../components/filter/Filter"
@@ -30,6 +30,7 @@ import SchoolPop from "../../components/utilities/SchoolPop"
 import { Link } from 'react-router-dom'
 import Paginate from "../../components/pagination/Paginate"
 import Search from "../../components/utilities/Search";
+import InstitutionImage from "../../components/utilities/InstitutionImage";
 
 
 export default function CollegeList(){
@@ -169,11 +170,10 @@ export default function CollegeList(){
     
     const collegeName = Array.isArray(colleges)
         ? displayedData.map((college, index) => {
-            const imagesDirectory = `/images/VITO_Education`;
             return (
                 <div key={index} className="child-items">
                     <div key={index} className="img-holder">
-                        <img src={`${imagesDirectory}.jpg`} className="logo-img"></img>
+                        <InstitutionImage name={college.name} category="college" className="logo-img" />
                     </div>
                     <div className="name-holder">
                         {college.name}
@@ -227,12 +227,11 @@ export default function CollegeList(){
     
     //This call back function returns require jsx syntaxes for the rendering purposes.
     const rankingCollege = score ? score.map((ranking, index) => {
-        const imagesDirectory = `/images/AACC_Global`;
         return (
             <div key={index} className="ranking-performance">
                 <div className="line-top"></div>
                 <div key={index} className="info-top">
-                    <img src={`${imagesDirectory}.jpg`} className="logo-top"></img>
+                    <InstitutionImage name={ranking.name} category="college" className="logo-top" />
                     <div className="info-top-rated">
                         { returnNumber(index + 1) }
                         <p className="ranked-names">{ranking.name}</p>
@@ -253,6 +252,12 @@ export default function CollegeList(){
     )
 
     return(
+        <>
+        <section className="listing-intro">
+            <span className="eyebrow">College listings</span>
+            <h1>Find colleges by accreditation, ownership, experience, and location.</h1>
+            <p>Shortlist institutions using UGC status, ownership type, operating details, and student-review signals.</p>
+        </section>
         <div className="layout">
             <div className="left-div">
                 {   isSuccess &&
@@ -284,20 +289,18 @@ export default function CollegeList(){
                         { collegeName }
                     </div>
                     <div></div>
+                    <form onSubmit={submitAdditionalFilters}>
+                        <SchoolPop 
+                            openStatus ={popMenuOpen} 
+                            popUpMenuOpenHandle={popMenuOpenHandler} 
+                            popUpMenuCloseHandle ={popMenuCloseHandler}
+                            popUpMenuOptions = {popUpFilterApplicants}
+                            setPopUpMenuOptions = {updatePopUpFilterApplicants}
+                            applyDelay = {delayApplier}
+                            applyClear = {popMenuClearHandler}
+                        />
+                    </form>
                 </div>
-            </div>
-            <div>
-                <form onSubmit={submitAdditionalFilters}>
-                    <SchoolPop 
-                        openStatus ={popMenuOpen} 
-                        popUpMenuOpenHandle={popMenuOpenHandler} 
-                        popUpMenuCloseHandle ={popMenuCloseHandler}
-                        popUpMenuOptions = {popUpFilterApplicants}
-                        setPopUpMenuOptions = {updatePopUpFilterApplicants}
-                        applyDelay = {delayApplier}
-                        applyClear = {popMenuClearHandler}
-                    />
-                </form>
             </div>
             <div className="right-div">
                 <div className="rating-menu">
@@ -316,5 +319,6 @@ export default function CollegeList(){
                 />
             </div>
         </div>
+        </>
     )
 }

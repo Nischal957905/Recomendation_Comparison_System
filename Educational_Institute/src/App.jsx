@@ -47,19 +47,19 @@ export default function App(){
           <Route path="/auth/login" element= {<Login />}/>
           <Route path="/auth/register" element={<Register/>} />
         </Route>
+        <Route path="/school" element={<SchoolList />} />
+        <Route path="/college" element= { <CollegeList/>} />
+        <Route path="/institution" element= { <InstitutionList/>} />
+
+        <Route path="/school/:school" element={<SchoolPage/>} />
+        <Route path="/college/:college" element= {<CollegePage/>}/>
+        <Route path="/institution/:institution" element= {<InstitutionPage/>}/>
+
+        <Route path="/comparison" element= { <Comparison/> } />
+        <Route path="/comparison/school" element={<ComparisonSchool/>} />
+        <Route path="/comparison/college" element= { <ComparisonCollege/> } />
+
         <Route element={<AuthenticationEnable/>}>
-
-          <Route path="/school" element={<SchoolList />} />
-          <Route path="/college" element= { <CollegeList/>} />
-          <Route path="/institution" element= { <InstitutionList/>} />
-
-          <Route path="/school/:school" element={<SchoolPage/>} />
-          <Route path="/college/:college" element= {<CollegePage/>}/>
-          <Route path="/institution/:institution" element= {<InstitutionPage/>}/>
-
-          <Route path="/comparison" element= { <Comparison/> } />
-          <Route path="comparison/school" element={<ComparisonSchool/>} />
-          <Route path="/comparison/college" element= { <ComparisonCollege/> } />
 
           <Route path="/discussion" element={<Post/>} />
           <Route path="/discussion/user/post" element={<UserPosts/>} />

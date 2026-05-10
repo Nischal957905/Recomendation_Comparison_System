@@ -1,38 +1,28 @@
-import { useGetComparisonsQuery } from "../../app/api/comparisonSlice"
+import { useGetComparisonsQuery, useLazyGetComparisonsQuery } from "../../app/api/comparisonSlice"
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import InstitutionImage from "../../components/utilities/InstitutionImage";
 import MessageProp from "../../components/utilities/MessageProp";
-
-//
-
-//Tabs
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-
-//Barchart
-import { Bar } from 'react-chartjs-2'
-import { BarChart} from '@mui/x-charts'
+import ModernComparisonChart from "../../components/comparison/ModernComparisonChart";
 
 
 export default function Comparison() {
 
     const [selectedInstitution, setSelectedInstitution] = useState({});
-    const [delayedValue, setDelayedValue] = useState()
+    const [comparisonResult, setComparisonResult] = useState(null);
 
-    const {
-        data: institutionData,
-        isLoading,
-        isSuccess,
-        error
-    } = useGetComparisonsQuery(delayedValue)
+    const { data: optionsData } = useGetComparisonsQuery({})
+    const [trigger, { isFetching }] = useLazyGetComparisonsQuery()
 
-    const {scoreObject} = institutionData ? institutionData : []
+    const scoreObject = comparisonResult?.scoreObject || []
+    const institutionsName = comparisonResult?.institutionsName || optionsData?.institutionsName || []
+
+    const toScore = (value) => {
+        const number = Number(value);
+        return Number.isFinite(number) ? Math.round(number * 10) / 10 : 0;
+    }
 
     let serviceArray = [];
     let experienceArray = [];
@@ -42,21 +32,19 @@ export default function Comparison() {
     let label = [];
     
     if(scoreObject){
-        scoreObject.forEach((item,index) => {
-            const servicePoint = item.service !== null ? item.service : 10
-            const experiencePoint = item.experience !== null ? item.experience : 10;
-            const accesPoint = item.access !== null ? item.access : 10;
-            const reviewPoint = item.review !== null ? item.review : 0;
+        scoreObject.forEach((item) => {
+            const servicePoint = toScore(item.service)
+            const experiencePoint = toScore(item.experience);
+            const accesPoint = toScore(item.access);
+            const reviewPoint = toScore(item.review);
             serviceArray.push(servicePoint)
             experienceArray.push(experiencePoint)
             accessArray.push(accesPoint)
-            ratingArray.push(item.review)
+            ratingArray.push(reviewPoint)
             totalArray.push(servicePoint + experiencePoint + accesPoint + reviewPoint)
             label.push(item.institution.name)
         });
     }
-
-    const institutionsName  = institutionData ? institutionData.institutionsName: [];
     
     const [count, setCount] = useState(0);
 
@@ -94,12 +82,6 @@ export default function Comparison() {
         })
     }
 
-    //Tab section
-    const [tabValue, setTabValue] = useState("1")
-    const tabSwappingHandler = (event, newVal) => {
-        setTabValue(newVal)
-    }
-
     const addComparison = () => {
         if(count == 1){
             handleMessageType('Can not exceed the 3 institutions', 'error')
@@ -116,14 +98,24 @@ export default function Comparison() {
         return Object.values(val).every(item => item !== '' && item !== null);
     }
 
-    const handleClickCompare = () => {
+    const handleClickCompare = async () => {
         if(Object.keys(selectedInstitution).length > 1 && Object.keys(selectedInstitution).length < 4){
-            const objectLength = selectedInstitution.length;
             const check = checkValue(selectedInstitution)
             if(check){
-                setDelayedValue(selectedInstitution)
-                if(isSuccess){
-                    handleMessageType('Institution Successfuly compared!','success')
+                try {
+                    const result = await trigger(selectedInstitution).unwrap()
+                    const comparedItems = result?.scoreObject || []
+                    setComparisonResult(result)
+                    if(comparedItems.length > 0){
+                        handleMessageType('Comparison results loaded.','success')
+                        showPopMessage()
+                    }
+                    else {
+                        handleMessageType('No comparison data was returned for those selections.','error')
+                        showPopMessage()
+                    }
+                } catch (err) {
+                    handleMessageType('Error occurred','error')
                     showPopMessage()
                 }
             }
@@ -132,20 +124,30 @@ export default function Comparison() {
                 showPopMessage()
             }
         }
-        if(error){
-            handleMessageType('some error occured','error')
+        else {
+            handleMessageType('Select at least two institutions to compare.','error')
             showPopMessage()
         }
     }
 
     return(
-        <div>
+        <main className="comparison-page">
             <MessageProp 
                 stateValue={messagePop}
                 destroy={destroyPopMessage}
                 messageType={display.severity}
                 message={display.message}
             />
+            <section className="page-intro">
+                <span className="eyebrow">Side-by-side comparison</span>
+                <h1>Compare institutions by experience, service, accessibility, rating, and overall score.</h1>
+                <p>Select two or three consultancies to generate a focused comparison with charts, score summaries, and practical strengths and limitations.</p>
+                <div className="comparison-switcher">
+                    <Link className="secondary-action" to="/comparison/college">Compare colleges</Link>
+                    <Link className="secondary-action" to="/comparison/school">Compare schools</Link>
+                </div>
+            </section>
+            <section className="compare-controls">
             <div>
                 <Autocomplete
                     disablePortal
@@ -184,140 +186,59 @@ export default function Comparison() {
                     </div>
                 ))
             }
-            <button onClick={addComparison}>Add+</button>
-            <button onClick={handleClickCompare}>Compare</button>
-            
-            <div>
-                {
-                    scoreObject &&
-                <Box>
-                    <TabContext value={tabValue}>
-                        <Box sx={{borderBottom:1, borderColor:"divider"}}>
-                            <TabList onChange={tabSwappingHandler}>
-                                <Tab value="1" label="Experience"/>
-                                <Tab value="2" label="Service"/>
-                                <Tab value="3" label="Accessibility"/>
-                                <Tab value="4" label="Rating"/>
-                                <Tab value="5" label="Overall"/>
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'barCategories',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: experienceArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel>
-                        <TabPanel value="2">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'serviceCategory',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: serviceArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel> 
-                        <TabPanel value="3">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'accessCategory',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: accessArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel>
-                        <TabPanel value="4">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'ratingCategories',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: ratingArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel>
-                        <TabPanel value="5">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'totalCategory',
-                                        data: label,
-                                        scaleType: 'band',
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: totalArray
-                                    }
-                                ]}
-                                height={400}
-                            />
-                        </TabPanel> 
-                    </TabContext>
-                </Box>
-                }
+            <div className="control-actions">
+                <button onClick={addComparison}>Add institution</button>
+                <button onClick={handleClickCompare} disabled={isFetching}>{isFetching ? "Comparing..." : "Compare"}</button>
             </div>
+            </section>
+            
+            {
+                scoreObject.length > 0 &&
+                <section className="comparison-summary">
+                    {scoreObject.map((item) => {
+                        const total = toScore(item.service) + toScore(item.access) + toScore(item.experience) + toScore(item.review)
+                        return (
+                            <article className="summary-card" key={item.institution._id || item.institution.name}>
+                                <strong>{item.institution.name}</strong>
+                                <span>{toScore(total)} total points</span>
+                                <p>Service {toScore(item.service)} / Experience {toScore(item.experience)} / Access {toScore(item.access)} / Rating {toScore(item.review)}</p>
+                            </article>
+                        )
+                    })}
+                </section>
+            }
+
+            {
+                scoreObject.length > 0 &&
+                <ModernComparisonChart
+                    title="Consultancy score comparison"
+                    metrics={[
+                        { label: "Overall", help: "Combined service, experience, access, and rating", values: scoreObject.map((item, index) => ({ name: item.institution.name, value: totalArray[index] })) },
+                        { label: "Service", help: "Countries, university reach, and specialization", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.service })) },
+                        { label: "Experience", help: "Experience and successful service history", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.experience })) },
+                        { label: "Accessibility", help: "Operating hours, online access, and platform reach", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.access })) },
+                        { label: "Rating", help: "Review-based score", values: scoreObject.map((item) => ({ name: item.institution.name, value: item.review })) },
+                    ]}
+                />
+            }
             {
                 
-                scoreObject &&
-                <div className="comparable-item-box">
+                scoreObject.length > 0 &&
+                <section className="comparable-item-box">
                     {
                         scoreObject.map((item,index) => {
-                            const imagesDirectory = `/images/${item.institution.name.replace(/ /g, "_")}`;
                             return(
                                 <div className="comparable-items" key={index}>
                                     <div>
-                                        <img src={`${imagesDirectory}.jpg`} className="comaparable-img"></img>
+                                        <InstitutionImage name={item.institution.name} category="institution" className="comaparable-img" />
                                     </div>
                                     <div className="totalPoints">
-                                        <div>
-                                            Total point: {item.service + item.access + item.experience}
-                                        </div>
-                                        <div>
-                                            Service score: {item.service !== null ? item.service : 0}
-                                        </div>
-                                        <div>
-                                            Experience score: {item.experience  !== null ? item.experience : 0}
-                                        </div>
-                                        <div>
-                                            Accesibility score: {item.access  !== null ? item.access : 0}
-                                        </div>
-                                        <div>
-                                            Rating score: {item.review}
-                                        </div>
+                                        <h2>{item.institution.name}</h2>
+                                        <div className="score-total">{toScore(item.service) + toScore(item.access) + toScore(item.experience) + toScore(item.review)}<span>total points</span></div>
+                                        <div className="metric-row"><span>Service</span><strong>{toScore(item.service)}</strong><i style={{width: `${Math.min(toScore(item.service), 100)}%`}} /></div>
+                                        <div className="metric-row"><span>Experience</span><strong>{toScore(item.experience)}</strong><i style={{width: `${Math.min(toScore(item.experience), 100)}%`}} /></div>
+                                        <div className="metric-row"><span>Accessibility</span><strong>{toScore(item.access)}</strong><i style={{width: `${Math.min(toScore(item.access), 100)}%`}} /></div>
+                                        <div className="metric-row"><span>Rating</span><strong>{toScore(item.review)}</strong><i style={{width: `${Math.min(toScore(item.review), 100)}%`}} /></div>
                                     </div>
                                     <div className="features-comparison">
                                         <div>
@@ -425,8 +346,8 @@ export default function Comparison() {
                             )
                         })
                     }
-                </div>
+                </section>
             }
-        </div>
+        </main>
     )
 }

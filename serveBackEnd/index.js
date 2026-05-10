@@ -25,6 +25,8 @@ const app = express()
 app.use(logger) //function for logging web app log into the logs directories
 app.use(cors(core)) //implementation of cors policy to block or allow access
 app.use(express.static('public')) //declaration of entrypoint directoyr file
+app.use(express.json())
+app.use(cookieParser())
 app.use('/',root); //declaration of routes path
 app.use('/auth', routeAuth)
 app.use('/institution', routeInstitute);
@@ -33,8 +35,6 @@ app.use('/discussion', routeDiscussion);
 app.use('/comparison', routeComparison);
 app.use('/college',routeCollege);
 app.use('/school', routeSchool)
-app.use(express.json())
-app.use(cookieParser())
 dbConnection()
 
 const PORT = process.env.port || 8800
@@ -50,7 +50,7 @@ app.get("/", (req,res)=>{
 })
 
 //Function for handling requests fo error requests
-app.all('*',(req,res) => {
+app.use((req,res) => {
     res.status(404)
     if(req.accepts('html')){
         const viewPath = join(__dirname, '.', 'view', 'Error.html');

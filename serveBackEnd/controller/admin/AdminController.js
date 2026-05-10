@@ -1,4 +1,3 @@
-import { query } from 'express'
 import mongoose from 'mongoose'
 import handleAsync from 'express-async-handler'
 import Post from '../../models/Post.js'
@@ -45,6 +44,20 @@ const getUserList = handleAsync(async (req,res) => {
 
     return res.json(getAllUsers)
 }) 
+
+const upload = handleAsync(async (req, res) => {
+    if(!req.file){
+        return res.status(400).json({ message: 'No image uploaded' })
+    }
+
+    return res.status(201).json({
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        path: req.file.path,
+        mimetype: req.file.mimetype,
+        size: req.file.size
+    })
+})
 
 const editPost = handleAsync(async (req, res) => {
 
@@ -363,4 +376,4 @@ const createConsultancy = handleAsync(async (req, res) => {
 export default { createCollege, 
     createSchool, createConsultancy, getAdminShowCase,
     deleteInstitution, editCollege, editConsultancy, 
-    editSchool, getUserList, editPost, inactivateUser };
+    editSchool, getUserList, editPost, inactivateUser, upload };

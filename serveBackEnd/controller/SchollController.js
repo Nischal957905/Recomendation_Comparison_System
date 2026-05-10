@@ -1,4 +1,3 @@
-import { query } from 'express'
 import School from '../models/School.js'
 import Review from '../models/Review.js'
 import handleAsync from 'express-async-handler'

@@ -1,4 +1,4 @@
-import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/Bi'
+import { BiSearchAlt } from 'react-icons/bi'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +29,7 @@ export default function Search({iterable,category}){
     // )
 
     return (
-        <>
+        <div className="search-shell">
             <Autocomplete
                 disablePortal
                 id="search-completion"
@@ -45,7 +45,7 @@ export default function Search({iterable,category}){
             <div className='dasdsa'>
                 <BiSearchAlt className="search-query" onClick={handleSearch}/>
             </div>
-        </>
+        </div>
     )
 
 }

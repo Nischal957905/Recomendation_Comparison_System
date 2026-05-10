@@ -4,6 +4,7 @@ import GoogleMap from '../../components/utilities/GoogleMap';
 import { useState, useEffect } from 'react';
 import Rating from "@mui/material/Rating";
 import useAuthentication from '../../components/hooks/useAuthentication';
+import InstitutionImage from "../../components/utilities/InstitutionImage";
 
 export default function InstitutionPage() {
 
@@ -122,7 +123,6 @@ export default function InstitutionPage() {
         })
     }
 
-    let imagesDirectory;
     let hasJapan;
     let hasKorea;
     let hasAustralia;
@@ -130,7 +130,6 @@ export default function InstitutionPage() {
     let hasUK;
 
     if(data){
-        imagesDirectory = `/images/${data.institutionData.name.replace(/ /g, "_")}`;
         hasKorea = data.institutionData.countries.includes('South Korea');
         hasJapan = data.institutionData.countries.includes('Japan');
         hasAustralia = data.institutionData.countries.includes('Australia');
@@ -161,34 +160,42 @@ export default function InstitutionPage() {
     }
 
     return(
-        <div>
-            <div>
+        <main className="detail-page">
+            <section className="detail-hero">
                 <div className='img-back-logo-holder'>
-                    { imagesDirectory && <img src={`${imagesDirectory}.jpg`} className="back-logo-img"></img>}
+                    <InstitutionImage name={data?.institutionData.name || institution} category="institution" className="back-logo-img" loading="eager" />
                 </div>
                 <div className='fields-holder'>
-                    <div>
-                        countries: {data && data.institutionData.countries.length}
+                    <div className="detail-title">
+                        <span className="eyebrow">Consultancy profile</span>
+                        <h1>{data?.institutionData.name || institution}</h1>
+                        <p>Review destinations, partner reach, experience, outcomes, classes, location, and student feedback before shortlisting this consultancy.</p>
                     </div>
                     <div>
-                        universities: {data && data.institutionData.universities !== '' ? data.institutionData.universities : "Not shown" }    
+                        Countries served: {data && data.institutionData.countries.length}
                     </div>
                     <div>
-                        experience: {data && data.institutionData.experience !== '' ? data.institutionData.experience : "Now shown"}    
+                        University partners: {data && data.institutionData.universities !== '' ? data.institutionData.universities : "Not shown" }    
                     </div>
                     <div>
-                        success: {data && data.institutionData.success !== '' ? data.institutionData.success : "Not Shown"}    
+                        Experience: {data && data.institutionData.experience !== '' ? `${data.institutionData.experience} years` : "Not shown"}    
+                    </div>
+                    <div>
+                        Successful services: {data && data.institutionData.success !== '' ? data.institutionData.success : "Not shown"}    
                     </div>
                 </div>
-            </div>
-            <div>
-                <div>
-                    <div>About</div>
+            </section>
+            <section className="detail-content">
+                <div className="info-panel">
+                    <h2>About</h2>
+                    <p>
+                        {data?.institutionData.name || "This consultancy"} is listed with measurable profile data so students can evaluate service reach, preparation support, and credibility before contacting the institution.
+                    </p>
                     {renderNegativeReview}
                     {renderPositiveReview}
                 </div>
-                <div className='feature-holder-in'>
-                    <h3>Features</h3>
+                <div className='feature-holder-in info-panel'>
+                    <h2>Highlights</h2>
                     <ul>
                         {
                             data && data.institutionData.countries.length > 0 ? (
@@ -215,15 +222,18 @@ export default function InstitutionPage() {
 
                     </ul>
                 </div>
-            </div>
+            </section>
             {
                 data && data?.institutionData.latitude !== '' && data?.institutionData.latitude &&
+                <section className="map-section">
                 <GoogleMap 
                     lat={data.institutionData.latitude}
                     long = {data.institutionData.longitude}
                 />
+                </section>
             }
-            <div className='post-review'>
+            <section className='post-review'>
+                <h2>Share a review</h2>
                 <form onSubmit={handleOnSubmit}>
                     <div className='review'>
                         <label>Review</label>
@@ -244,10 +254,11 @@ export default function InstitutionPage() {
                     </div>
                     <button>Submit Review</button>
                 </form> 
-            </div>
-            <div>
+            </section>
+            <section className="review-grid">
+            <div className="info-panel">
                 {
-                    data && data?.positiveReview.length > 0 && <h1>Postive Reviews</h1> }
+                    data && data?.positiveReview.length > 0 && <h2>Positive Reviews</h2> }
                 {
                     data && data?.positiveReview.length > 0 &&
                     data.positiveReview.map((item,index) => {
@@ -261,9 +272,9 @@ export default function InstitutionPage() {
                     })
                 }
             </div>
-            <div>
+            <div className="info-panel">
                 {
-                    data && data?.negativeReview.length > 0 && <h1>Negative Reviews</h1> }
+                    data && data?.negativeReview.length > 0 && <h2>Negative Reviews</h2> }
                 {
                     data && data?.negativeReview.length > 0 &&
                     data.negativeReview.map((item,index) => {
@@ -277,7 +288,8 @@ export default function InstitutionPage() {
                     })
                 }
             </div>
+            </section>
 
-        </div>
+        </main>
     )
 }

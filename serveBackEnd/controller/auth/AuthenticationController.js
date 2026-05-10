@@ -1,6 +1,4 @@
-import { query } from 'express'
 import handleAsync from 'express-async-handler'
-import * as turf from '@turf/turf'
 import User from '../../models/User.js'
 import Role from '../../models/Role.js'
 import jwt from 'jsonwebtoken';
@@ -14,9 +12,9 @@ const verifyUser = handleAsync(async (req,res) => {
 
     if(filter.username && filter.password){
         const user = await User.findOne({username: filter.username, password: filter.password, status:"Active"}).select().lean();
-        const roles = await Role.findOne({_id: user.role_id}).select({role_name: 1}).lean();
         const userVerify = user ? true : false
         if(userVerify){
+            const roles = await Role.findOne({_id: user.role_id}).select({role_name: 1}).lean();
             const tokenForAccess = jwt.sign({
                 'username': user.username
             }, process.env.ACCESS_TOKEN_SECRET , 
@@ -40,9 +38,9 @@ const createUser = handleAsync(async (req,res) => {
     
     const data = req.query;
     if(data.location){
-        const role = await Role.find({role_name: 'non-admin'}).select({_id: 1}).lean()
+        const role = await Role.findOne({role_name: 'non-admin'}).select({_id: 1}).lean()
         const findUser = await User.findOne({username: data.username}).select().lean()
-        if(!findUser){
+        if(!findUser && role){
             const newUser = await User.create({
                 role_id: role._id,
                 latitude: data.latitude,
@@ -57,4 +55,8 @@ const createUser = handleAsync(async (req,res) => {
     }
 })
 
-export default { verifyUser, createUser };
+const verifyUserOnEmail = handleAsync(async (req,res) => {
+    return res.sendStatus(204)
+})
+
+export default { verifyUser, createUser, verifyUserOnEmail };

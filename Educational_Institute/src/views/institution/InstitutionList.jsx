@@ -10,11 +10,11 @@ import React, { useEffect, useState } from "react"
 import { useParams } from 'react-router-dom';
 import '../../index.css'
 import Button from '@mui/material/Button'
-import { MdExpandMore } from 'react-icons/Md'
-import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/Bi'
-import { IoMdSettings } from 'react-icons/Io'
-import { RiArrowDropDownLine } from 'react-icons/Ri'
-import { GrFormNextLink } from 'react-icons/Gr'
+import { MdExpandMore } from 'react-icons/md'
+import { BiSearchAlt,BiSolidSortAlt } from 'react-icons/bi'
+import { IoMdSettings } from 'react-icons/io'
+import { RiArrowDropDownLine } from 'react-icons/ri'
+import { GrFormNextLink } from 'react-icons/gr'
 import { PiNumberOneBold as One,
         PiNumberTwoBold as Two,
         PiNumberThreeBold as Three,
@@ -24,15 +24,15 @@ import { PiNumberOneBold as One,
         PiNumberSevenBold as Seven,
         PiNumberEightBold as Eight,
         PiNumberNineBold as Nine,
-        PiNumberZeroBold as Zero } from 'react-icons/Pi'
+        PiNumberZeroBold as Zero } from 'react-icons/pi'
 // import Institution from "./Institution"
 
 import Filter from "../../components/filter/Filter"
 import PopUp from "../../components/utilities/PopUp"
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react"
 import { Link } from 'react-router-dom'
 
 import Search from "../../components/utilities/Search";
+import InstitutionImage from "../../components/utilities/InstitutionImage";
 //Function definintion to be exported.
 export default function InstitutionList(){
 
@@ -258,11 +258,10 @@ export default function InstitutionList(){
 
     const institutionName = Array.isArray(institutions)
         ? displayedData.map((institution, index) => {
-            const imagesDirectory = `/images/${institution.name.replace(/ /g, "_")}`;
             return (
                 <div key={index} className="child-items">
                     <div key={index} className="img-holder">
-                        <img src={`${imagesDirectory}.jpg`} className="logo-img"></img>
+                        <InstitutionImage name={institution.name} category="institution" className="logo-img" />
                     </div>
                     <div className="name-holder">
                         {institution.name}
@@ -306,12 +305,11 @@ export default function InstitutionList(){
 
     //This call back function returns require jsx syntaxes for the rendering purposes.
     const rankingInstitution = score ? score.map((ranking, index) => {
-        const imagesDirectory = `/images/${ranking.name.replace(/ /g, "_")}`;
         return (
             <div key={index} className="ranking-performance">
                 <div className="line-top"></div>
                 <div key={index} className="info-top">
-                    <img src={`${imagesDirectory}.jpg`} className="logo-top"></img>
+                    <InstitutionImage name={ranking.name} category="institution" className="logo-top" />
                     <div className="info-top-rated">
                         { returnNumber(index + 1) }
                         <p className="ranked-names">{ranking.name}</p>
@@ -326,6 +324,12 @@ export default function InstitutionList(){
 
     //This is the return statement for the page and actually renders whatever is inside it.
     return (
+        <>
+        <section className="listing-intro">
+            <span className="eyebrow">Consultancy listings</span>
+            <h1>Explore education consultancies with fast search, practical filters, and ranked recommendations.</h1>
+            <p>Use country, experience, specialization, online service, distance, and rating filters to narrow the options that fit your study-abroad plan.</p>
+        </section>
         <div className="layout">
             <div className="left-div">
                     {
@@ -358,20 +362,18 @@ export default function InstitutionList(){
                         { institutionName }
                     </div>
                     <div></div>
+                    <form onSubmit={submitAdditionalFilters}>
+                        <PopUp 
+                            openStatus ={popMenuOpen} 
+                            popUpMenuOpenHandle={popMenuOpenHandler} 
+                            popUpMenuCloseHandle ={popMenuCloseHandler}
+                            popUpMenuOptions = {popUpFilterApplicants}
+                            setPopUpMenuOptions = {updatePopUpFilterApplicants}
+                            applyDelay = {delayApplier}
+                            applyClear = {popMenuClearHandler}
+                        />
+                    </form>
                 </div>
-            </div>
-            <div>
-                <form onSubmit={submitAdditionalFilters}>
-                    <PopUp 
-                        openStatus ={popMenuOpen} 
-                        popUpMenuOpenHandle={popMenuOpenHandler} 
-                        popUpMenuCloseHandle ={popMenuCloseHandler}
-                        popUpMenuOptions = {popUpFilterApplicants}
-                        setPopUpMenuOptions = {updatePopUpFilterApplicants}
-                        applyDelay = {delayApplier}
-                        applyClear = {popMenuClearHandler}
-                    />
-                </form>
             </div>
             <div className="right-div">
                 
@@ -392,5 +394,6 @@ export default function InstitutionList(){
                 />
             </div>
         </div>
+        </>
     )
 }

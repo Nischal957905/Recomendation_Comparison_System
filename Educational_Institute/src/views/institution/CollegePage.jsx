@@ -3,6 +3,7 @@ import { useGetSingleCollegeQuery,  usePostReviewQuery } from "../../app/api/app
 import GoogleMap from '../../components/utilities/GoogleMap';
 import { useState, useEffect } from 'react';
 import Rating from "@mui/material/Rating";
+import InstitutionImage from "../../components/utilities/InstitutionImage";
 
 export default function InstitutionPage() {
 
@@ -77,38 +78,36 @@ export default function InstitutionPage() {
             }
         })
     }
-
-    let imagesDirectory;
-
-    if(data){
-        imagesDirectory = `/images/VITO_Education`;
-    }
-
     return(
-        <div>
-            <div>
+        <main className="detail-page">
+            <section className="detail-hero">
                 <div className='img-back-logo-holder'>
-                    { imagesDirectory && <img src={`${imagesDirectory}.jpg`} className="back-logo-img"></img>}
+                    <InstitutionImage name={data?.institutionData.name || college} category="college" className="back-logo-img" loading="eager" />
                 </div>
                 <div className='fields-holder'>
-                    <div>
-                        accrecreditation: {data && data?.institutionData.accreditation}
+                    <div className="detail-title">
+                        <span className="eyebrow">College profile</span>
+                        <h1>{data?.institutionData.name || college}</h1>
+                        <p>Evaluate accreditation, ownership, establishment history, experience, location, and student feedback in one place.</p>
                     </div>
                     <div>
-                        established at: {data && data?.institutionData.established !== '' ? data?.institutionData.established : "Not shown" }    
+                        Accreditation: {data && data?.institutionData.accreditation}
                     </div>
                     <div>
-                        experience: {data && data?.institutionData.experience !== '' ? data?.institutionData.experience : "Now shown"}    
+                        Established: {data && data?.institutionData.established !== '' ? data?.institutionData.established : "Not shown" }    
+                    </div>
+                    <div>
+                        Experience: {data && data?.institutionData.experience !== '' ? `${data?.institutionData.experience} years` : "Not shown"}    
                     </div>
                 </div>
-            </div>
-            <div>
-                <div>
-                    <div>About</div>
-                    
+            </section>
+            <section className="detail-content">
+                <div className="info-panel">
+                    <h2>About</h2>
+                    <p>{data?.institutionData.name || "This college"} is presented with practical comparison details so students can understand the institution before applying or visiting.</p>
                 </div>
-                <div className='feature-holder-in'>
-                    <h3>Features</h3>
+                <div className='feature-holder-in info-panel'>
+                    <h2>Highlights</h2>
                     <ul>
                         {
                             data && data?.institutionData.ownership && data?.institutionData.ownership === 'private Institution' ? (
@@ -126,15 +125,18 @@ export default function InstitutionPage() {
                     
                     </ul>
                 </div>
-            </div>
+            </section>
             {
                 data && data?.institutionData.latitude && data?.institutionData.latitude !== '' &&
+                <section className="map-section">
                 <GoogleMap 
                     lat={data.institutionData.latitude}
                     long = {data.institutionData.longitude}
                 />
+                </section>
             }  
-             <div className='post-review'>
+             <section className='post-review'>
+                <h2>Share a review</h2>
                 <form onSubmit={handleOnSubmit}>
                     <div className='review'>
                         <label>Review</label>
@@ -155,10 +157,11 @@ export default function InstitutionPage() {
                     </div>
                     <button>Submit Review</button>
                 </form> 
-            </div> 
-            <div>
+            </section> 
+            <section className="review-grid">
+            <div className="info-panel">
                 {
-                    data && data?.positiveReview.length > 0 && <h1>Postive Reviews</h1> }
+                    data && data?.positiveReview.length > 0 && <h2>Positive Reviews</h2> }
                 {
                     data && data?.positiveReview.length > 0 &&
                     data.positiveReview.map((item,index) => {
@@ -172,9 +175,9 @@ export default function InstitutionPage() {
                     })
                 }
             </div>
-            <div>
+            <div className="info-panel">
                 {
-                    data && data?.negativeReview.length > 0 && <h1>Negative Reviews</h1> }
+                    data && data?.negativeReview.length > 0 && <h2>Negative Reviews</h2> }
                 {
                     data && data?.negativeReview.length > 0 &&
                     data.negativeReview.map((item,index) => {
@@ -187,7 +190,8 @@ export default function InstitutionPage() {
                         )
                     })
                 }
-            </div>             
-        </div>
+            </div>
+            </section>             
+        </main>
     )
 }

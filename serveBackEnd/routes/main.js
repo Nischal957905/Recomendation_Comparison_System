@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 //routing paths here.
-router.get(['^/$', '^/index(.html)?$'], (req, res) => {
+router.get(['/', '/index', '/index.html'], (req, res) => {
   const viewPath = join(__dirname, '..', 'view', 'index.html');
   res.sendFile(viewPath);
 });
