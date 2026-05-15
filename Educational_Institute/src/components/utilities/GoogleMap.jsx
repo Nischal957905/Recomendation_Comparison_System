@@ -4,8 +4,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import * as turf from '@turf/turf'
 
 export default function GoogleMap({lat,long}){
-    console.log(long)
-
     const apiKey = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
 
     let distanceOne = turf.point([27.7046882,85.3204163])

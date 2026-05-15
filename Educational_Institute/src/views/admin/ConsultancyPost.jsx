@@ -31,9 +31,16 @@ export default function ConsultancyPost(){
     }
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handlePostSubmit}>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Create consultancy</h1>
+                    <p>Add a new consultancy listing with service reach, performance, schedule, and contact details.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
+                <form className="admin-form" onSubmit={handlePostSubmit}>
                     <div>
                         <label>Name</label>
                         <input
@@ -203,7 +210,7 @@ export default function ConsultancyPost(){
                     </div>
                     <button>Post Data</button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     )
 }

@@ -13,12 +13,15 @@ import Comment from '../../models/Comment.js'
 
 const getUserPost = handleAsync(async (req, res) => {
 
-    const username = req.query.username
+    const username = req.user.username
     const user_id = await User.findOne({username: username}).select().lean();
     const posts = await Post.find({user_id: user_id._id}).select({_id:1, post: 1, tag: 1,date:1}).lean()
     if(req.query.id){
+        if (!mongoose.Types.ObjectId.isValid(req.query.id)) {
+            return res.status(400).json({ message: 'Invalid post id.' })
+        }
         const id = new mongoose.Types.ObjectId(req.query.id)
-        const criteria = {_id: id}
+        const criteria = {_id: id, user_id: user_id._id}
         const values = { 
             post: req.query.post,
             tag: req.query.tag,
@@ -109,7 +112,7 @@ const createPost = handleAsync(async (req, res) => {
     if(params.commentStatus){
         const comment = await Comment.create({
             comment: params.comment,
-            username: params.username,
+            username: req.user.username,
             post_id: params.institution
         }) 
         res.status(200).json("Post created")
@@ -117,8 +120,8 @@ const createPost = handleAsync(async (req, res) => {
 
     if(params.posting){
         if(params.tag !== '' && params.tag && params.post && params.post !== ''){
-            const user = await User.findOne({username: "Kirito"}).select('_id').lean()
-            const post = await Post.create({'post': params.post, 'user_id': user, 'tag': params.tag})
+            const user = await User.findOne({username: req.user.username}).select('_id').lean()
+            const post = await Post.create({'post': params.post, 'user_id': user._id, 'tag': params.tag})
             res.status(200).json("Post created")
         } 
     }
@@ -138,8 +141,11 @@ const updatePost = handleAsync(async (req, res) => {
 const deletePost = handleAsync(async (req, res) => {
     const id = req.query.deleteVal;
     if(id && id !== ''){
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid post id.' })
+        }
         const data = new mongoose.Types.ObjectId(id)
-        const deleteData = await Post.deleteOne({_id: data});
+        const deleteData = await Post.deleteOne({_id: data, user_id: req.user.id});
         return res.json(deleteData)
     }
 })

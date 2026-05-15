@@ -35,7 +35,15 @@ export default function User(){
     }, [loading])
 
     return(
-        <div>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Manage users</h1>
+                    <p>Review user accounts and restrict access when needed.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
             {
                 isSuccess && 
                 <AdminUserTable
@@ -43,6 +51,7 @@ export default function User(){
                     deletion={handleInactivate}
                 />
             }
-        </div>
+            </section>
+        </main>
     )
 }

@@ -15,14 +15,23 @@ export default function UserPost(){
     } = useEditPostUserQuery({institution,delayedData})
 
     return (
-        <div>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>User posts</h1>
+                    <p>Review posts submitted by this user.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
             {
                 isSuccess &&
                 <PostsTable
                     props={data}
                 />
             }
-        </div>
+            </section>
+        </main>
     )
 
 }

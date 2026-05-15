@@ -106,7 +106,6 @@ const accessPointHandler = (opTime, clTime, online, platform) => {
 const getCompany = handleAsync(async (req, res) => {
     try {
       const companyId = req.params.id
-      console.log(companyId)
       return res.json("hello")
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
@@ -154,7 +153,6 @@ const reviewPointHandler = (reviews) => {
 const getComparisonList = handleAsync(async (req, res) => {
 
     const insObject = req.query
-    console.log(insObject)
     let fullObject = [];
     let scoreObject = [];
     let fullReviews = [];

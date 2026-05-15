@@ -1,8 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import baseQuery from './baseQuery'
 
 export const discussionSlice = createApi({
     reducerPath: 'discussionApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8800'}),
+    baseQuery,
     tagTypes: ['Discussion'],
     endpoints: (builder) => ({
         getDiscussions: builder.query({

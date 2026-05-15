@@ -30,20 +30,26 @@ export default function Search({iterable,category}){
 
     return (
         <div className="search-shell">
-            <Autocomplete
-                disablePortal
-                id="search-completion"
-                className="search-bars"
-                options={iterable}
-                value={insitution}
-                onChange={(event, newVal) => handleInsititutionSelection (event, newVal)}
-                renderInput={(params) => <div className='dsa'>
-                        <TextField {...params} label="Institution"/>
-                        
-                </div>}
-            />
-            <div className='dasdsa'>
-                <BiSearchAlt className="search-query" onClick={handleSearch}/>
+            <div className="search-meta">
+                <span>Search listings</span>
+                <p>Find a known institution quickly.</p>
+            </div>
+            <div className="search-control-row">
+                <Autocomplete
+                    disablePortal
+                    id="search-completion"
+                    className="search-bars"
+                    options={iterable}
+                    value={insitution}
+                    onChange={(event, newVal) => handleInsititutionSelection (event, newVal)}
+                    renderInput={(params) => <div className='search-field'>
+                            <TextField {...params} label="Institution name" placeholder="Type a college, school, or consultancy"/>
+                    </div>}
+                />
+                <button type="button" className='search-submit' onClick={handleSearch}>
+                    <BiSearchAlt className="search-query" />
+                    <span>Search</span>
+                </button>
             </div>
         </div>
     )

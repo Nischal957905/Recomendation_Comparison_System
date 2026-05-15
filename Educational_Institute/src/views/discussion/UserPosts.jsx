@@ -73,7 +73,6 @@ export default function UserPosts(){
     }
     
     const deletePost = (values) => {
-        console.log(values)
         setDeleteValue({
             'deleteVal': values
         })

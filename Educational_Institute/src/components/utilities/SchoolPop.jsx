@@ -1,5 +1,5 @@
-import { Dialog, Button, AppBar, Select, MenuItem} from "@mui/material";
-import React, { useState } from "react";
+import { Dialog } from "@mui/material";
+import React from "react";
 
 export default function SchoolPop(props) {
 
@@ -13,8 +13,6 @@ export default function SchoolPop(props) {
         applyClear,
     } = props;
 
-    const [formValue, setFormValue] = useState([])
-
     const setUpdatedValues = (event) => {
         const {value,name} = event.target;
         setPopUpMenuOptions(name, value)
@@ -26,12 +24,22 @@ export default function SchoolPop(props) {
         <Dialog 
             onClose={popUpMenuCloseHandle} 
             open={openStatus} 
-            fullScreen
+            fullWidth
+            maxWidth="sm"
         >
             <div className="main-pop-con">
+                <div className="advanced-filter-head">
+                    <div>
+                        <span>Advanced filters</span>
+                        <p>Fine tune results by operating hours, distance, and experience range.</p>
+                    </div>
+                    <button type="button" onClick={popUpMenuCloseHandle} className="close-pop-menu">
+                        Close
+                    </button>
+                </div>
                 <div className="pop-menu-items">
-                    <div className="pop-menu-openeing-time">
-                        <label>Opening Time:</label>
+                    <div className="advanced-field pop-menu-openeing-time">
+                        <label>Opening Time</label>
                         <input 
                             type="time" 
                             name="opening-time"
@@ -39,8 +47,8 @@ export default function SchoolPop(props) {
                             onChange={setUpdatedValues}
                         />
                     </div>
-                    <div className="pop-menu-closing-time">
-                        <label>Closing Time:</label>
+                    <div className="advanced-field pop-menu-closing-time">
+                        <label>Closing Time</label>
                         <input 
                             type="time" 
                             name="closing-time"
@@ -48,8 +56,8 @@ export default function SchoolPop(props) {
                             onChange={setUpdatedValues}
                         />
                     </div>
-                    <div className="pop-menu-distance">
-                        <label>Distance:</label>
+                    <div className="advanced-field pop-menu-distance">
+                        <label>Distance</label>
                         <select 
                             name="distance"
                             className="pop-menu-distance"
@@ -61,29 +69,30 @@ export default function SchoolPop(props) {
                             <option value="Distant">Distant</option>
                         </select>
                     </div>
-                    <div className="pop-menu-range-exp">
-                        <label>Experience:</label>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['experience-start']} 
-                            name="experience-start"
-                            onChange={setUpdatedValues}/>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['experience-end']} 
-                            name="experience-end"
-                            onChange={setUpdatedValues}/>
+                    <div className="advanced-field pop-menu-range-exp">
+                        <label>Experience Range</label>
+                        <div className="range-inputs">
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['experience-start']} 
+                                name="experience-start"
+                                placeholder="Min"
+                                onChange={setUpdatedValues}/>
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['experience-end']} 
+                                name="experience-end"
+                                placeholder="Max"
+                                onChange={setUpdatedValues}/>
+                        </div>
                     </div>
                 </div>
                 <div className="pop-menu-div">
-                        <button onClick={popUpMenuCloseHandle} className="close-pop-menu">
-                            Close
+                        <button type="button" onClick={applyClear} className="apply-pop-clear">
+                            Clear filters
                         </button>
-                        <button onClick={applyDelay} className="apply-pop-menu">
+                        <button type="button" onClick={applyDelay} className="apply-pop-menu">
                             Apply
-                        </button>
-                        <button onClick={applyClear} className="apply-pop-clear">
-                            Clear
                         </button>
                 </div>
             </div>

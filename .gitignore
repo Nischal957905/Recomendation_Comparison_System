@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+logs/
+
+Educational_Institute/node_modules/
+Educational_Institute/dist/
+Educational_Institute/.env
+Educational_Institute/.env.local
+
+serveBackEnd/node_modules/
+serveBackEnd/.env
+serveBackEnd/logs/

@@ -145,7 +145,14 @@ export default function ComparisonSchool() {
                 </div>
             </section>
             <section className="compare-controls">
-            <div>
+            <div className="compare-controls-head">
+                <div>
+                    <span>Build comparison</span>
+                    <p>Select two schools to start. Add one more when you need a broader shortlist.</p>
+                </div>
+            </div>
+            <div className="compare-slot">
+                <span>First school</span>
                 <Autocomplete
                     disablePortal
                     id="auto-completion"
@@ -153,10 +160,11 @@ export default function ComparisonSchool() {
                     options={institutionsName}
                     value={selectedInstitution[1] || null}
                     onChange={(event, newVal) => handleInsititutionSelection (event, newVal, 1)}
-                    renderInput={(params) => <TextField {...params} label="Institution"/>}
+                    renderInput={(params) => <TextField {...params} label="School" placeholder="Choose a school"/>}
                 />
             </div>
-            <div>
+            <div className="compare-slot">
+                <span>Second school</span>
                 <Autocomplete
                     disablePortal
                     id="auto-completion"
@@ -164,13 +172,14 @@ export default function ComparisonSchool() {
                     options={institutionsName}
                     value={selectedInstitution[2] || null}
                     onChange={(event, newVal) => handleInsititutionSelection (event, newVal, 2)}
-                    renderInput={(params) => <TextField {...params} label="Institution"/>}
+                    renderInput={(params) => <TextField {...params} label="School" placeholder="Choose a school"/>}
                 />
             </div>
             {
                 count > 0 &&
                 [...Array(count)].map((item, index) => (
-                    <div key={index}>
+                    <div className="compare-slot" key={index}>
+                        <span>Optional school</span>
                         <Autocomplete
                             disablePortal
                             id="auto-completion"
@@ -178,7 +187,7 @@ export default function ComparisonSchool() {
                             options={institutionsName}
                             value={selectedInstitution[index + 3] || null}
                             onChange={(event, newVal) => handleInsititutionSelection (event, newVal, index + 3)}
-                            renderInput={(params) => <TextField {...params} label="Institution"/>}
+                            renderInput={(params) => <TextField {...params} label="School" placeholder="Choose a school"/>}
                         />
                     </div>
                 ))

@@ -75,6 +75,7 @@ export default function App(){
             <Route path="/admin/edit/school/:institution" element={<EditSchool/>} />
             <Route path="/admin/edit/college/:institution" element={<EditCollege/>} />
             <Route path="/admin/edit/institution/:institution" element={<EditConsultancy/>} />
+            <Route path="/admin/edit/consultancy/:institution" element={<EditConsultancy/>} />
           </Route>
         </Route>
       </Route>

@@ -1,12 +1,13 @@
-import { Outlet, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
 
 const LoginEnable = () => {
 
     const role = localStorage.getItem('login')
+    const accessToken = localStorage.getItem('accessToken')
     const location = useLocation()
 
     return (
-        !role ? <Outlet/> : <Navigate to="/institution" state={{from: location}} replace/>
+        !(role && accessToken) ? <Outlet/> : <Navigate to="/institution" state={{from: location}} replace/>
     )
 }
 

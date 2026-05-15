@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import FormControl from '@mui/material/FormControl';
 import { RiArrowDropDownLine } from 'react-icons/ri'
-import { Checkbox, Select, InputLabel, OutlinedInput, MenuItem, ListItemText } from "@mui/material";
 
 export default function Filter(props){
 
@@ -12,13 +10,22 @@ export default function Filter(props){
         options,
     } = props
 
-    const [selectedValue, setSelectedValue] = useState([]);
     const [menuOpen, setMenuOpen] = useState(false)
     const menuRef = useRef();
+
+    const filterLabel = fieldName
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+
+    const formatOptionLabel = (option) => String(option)
+        .replace(/^\s*(✓|âœ“)\s*/, '')
+        .replace(/\s+Institution\s*$/i, '')
+        .trim()
     
     useEffect(() => {
         let handler = (e) => {
-            if(!menuRef.current.contains(e.target)){
+            if(menuRef.current && !menuRef.current.contains(e.target)){
                 setMenuOpen(false)
             }
         }
@@ -27,7 +34,7 @@ export default function Filter(props){
         return () => {
             document.removeEventListener("mousedown",handler)
         }
-    })
+    }, [])
 
     function showMenuOptions(event){
         event.preventDefault()
@@ -47,10 +54,20 @@ export default function Filter(props){
 
     return (
         <div className="filter-showcase" ref={menuRef}>
-            <div className="menu-showcase"><button onClick={showMenuOptions}>{fieldName}<RiArrowDropDownLine/></button></div>
+            <div className="menu-showcase">
+                <button className={`filter-trigger${values.length ? " is-active" : ""}${menuOpen ? " is-open" : ""}`} onClick={showMenuOptions}>
+                    <span>{filterLabel}</span>
+                    {values.length > 0 && <em>{values.length}</em>}
+                    <RiArrowDropDownLine/>
+                </button>
+            </div>
             {
                 menuOpen &&
                     <div className="menu-options">
+                        <div className="menu-options-head">
+                            <strong>{filterLabel}</strong>
+                            <span>{values.length ? `${values.length} selected` : 'Any'}</span>
+                        </div>
                         {
                             options.map((option,index) => (
                                 <label key={index}>
@@ -60,7 +77,7 @@ export default function Filter(props){
                                         value={option}
                                         onChange={handleCheckboxChange}
                                         checked={values.includes(option)}/>
-                                    {option}
+                                    {formatOptionLabel(option)}
                                 </label>
                             ))
                         }

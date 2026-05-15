@@ -31,6 +31,7 @@ import { Link } from 'react-router-dom'
 import Paginate from "../../components/pagination/Paginate"
 import Search from "../../components/utilities/Search";
 import InstitutionImage from "../../components/utilities/InstitutionImage";
+import InstitutionCard from "../../components/utilities/InstitutionCard";
 
 
 export default function CollegeList(){
@@ -48,6 +49,7 @@ export default function CollegeList(){
 
     const { colleges } = collegeData ? collegeData : []
     const [score, setScore] = useState([])
+    const [asecSort, setAsecSort] = useState(true)
 
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
@@ -61,11 +63,24 @@ export default function CollegeList(){
     let displayedData = colleges && colleges.slice(startIndex, endIndex);
     let totalPages = Math.ceil(colleges && colleges.length / itemsPerPage);
 
+    if (Array.isArray(colleges)) {
+        const sortedColleges = [...colleges].sort((first, second) => {
+            return asecSort
+                ? first.name.localeCompare(second.name)
+                : second.name.localeCompare(first.name)
+        })
+        displayedData = sortedColleges.slice(startIndex, endIndex)
+    }
+
     const handlePageChange = (event, newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
             setCurrentPage(newPage);
         }
     };
+
+    const handleSorting = () => {
+        setAsecSort(prevVal => !prevVal)
+    }
     
 
     //Button handle for pop-up section
@@ -96,7 +111,6 @@ export default function CollegeList(){
 
     const [delayedValue, setDelayedValue] = useState();
     const delayApplier = () => {
-        console.log("Das")
         setPopMenuOpen(false)
         setSelectedValue((prevVal) => {
             return {
@@ -127,6 +141,20 @@ export default function CollegeList(){
         setPopUpFilterApplicants(value)
         setSelectedValue({})
     }
+
+    const clearMainFilters = () => {
+        setSelectedValue({})
+    }
+
+    const activeFilters = Object.entries(selectedValue).flatMap(([key, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+            return value.map((item) => ({
+                key,
+                label: String(item).replace(/^\s*(✓|âœ“)\s*/, '').replace(/\s+Institution\s*$/i, '').trim()
+            }))
+        }
+        return []
+    })
 
  
     useEffect(() => {
@@ -171,17 +199,12 @@ export default function CollegeList(){
     const collegeName = Array.isArray(colleges)
         ? displayedData.map((college, index) => {
             return (
-                <div key={index} className="child-items">
-                    <div key={index} className="img-holder">
-                        <InstitutionImage name={college.name} category="college" className="logo-img" />
-                    </div>
-                    <div className="name-holder">
-                        {college.name}
-                        <Link to={`/college/${college.name}`}>
-                            <GrFormNextLink className="link-institution"/>
-                        </Link>
-                    </div>
-                </div>
+                <InstitutionCard
+                    key={college._id || college.name || index}
+                    item={college}
+                    category="college"
+                    to={`/college/${college.name}`}
+                />
             )
     }) : null
 
@@ -269,25 +292,48 @@ export default function CollegeList(){
                 <div>
                     <div className="filter-options">
                         <div className="filter-con">
+                            <div className="filter-panel-header">
+                                <div>
+                                    <span>Refine results</span>
+                                    <p>Choose one or more filters. Results update as you select.</p>
+                                </div>
+                                <button type="button" className="filter-clear" onClick={clearMainFilters}>Clear</button>
+                            </div>
                             <form onSubmit={submitFilters}>
                                 <div className="filter-ucg"><Filter fieldName="ugc" update={updateFilters}  options={[' ✓ UGC Accredited',' ✓ UGC Non-Accredited']} values={selectedValue.ugc || [] }/></div>
                                 <div className="filter-experience"><Filter fieldName="experience" update={updateFilters} options={['High','Low','Moderate']} values={selectedValue.experience || [] }/></div>
                                 <div className="filter-ownership"><Filter fieldName="ownership" update={updateFilters} options={[' community Institution ',' private Institution ']} values={selectedValue.ownership || [] }/></div>
-                                <button>Apply</button>
                             </form>
-                            <div className="filter-settings" onClick={popMenuOpenHandler}>
+                            <button type="button" className="filter-settings" onClick={popMenuOpenHandler}>
                                 <p>Filter</p>
                                 <IoMdSettings/>
-                            </div>
+                            </button>
                         </div>
                     </div>
                     <div className="result-counter">
-                        <p>Institution Found: {colleges ? colleges.length : 0} </p>
-                        <BiSolidSortAlt className="sort-icon"/>
+                        <div>
+                            <p>Results: {colleges ? colleges.length : 0}</p>
+                            {activeFilters.length > 0 && (
+                                <div className="active-filter-row">
+                                    {activeFilters.map((filter, index) => (
+                                        <span key={`${filter.key}-${index}`}>{filter.label}</span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <button type="button" className="sort-action" onClick={handleSorting}>
+                            <BiSolidSortAlt />
+                            <span>{asecSort ? 'Sort A-Z' : 'Sort Z-A'}</span>
+                        </button>
                     </div>
                     <div className="item-container">
-                        { collegeName }
+                        {collegeName?.length ? collegeName : <div className="empty-list-state">No colleges match the selected filters. Clear filters and try again.</div>}
                     </div>
+                    <Paginate
+                        count={totalPages}
+                        update={handlePageChange}
+                        pageCurrently={currentPage}
+                    />
                     <div></div>
                     <form onSubmit={submitAdditionalFilters}>
                         <SchoolPop 
@@ -312,11 +358,6 @@ export default function CollegeList(){
                 <div className="top-rated">
                     { rankingCollege}
                 </div>
-                <Paginate
-                    count={totalPages}
-                    update={handlePageChange}
-                    pageCurrently={currentPage}
-                />
             </div>
         </div>
         </>

@@ -7,10 +7,31 @@ api to connect mongo with fron-end react
 import express from 'express'
 import AdminController from '../controller/admin/AdminController.js';
 import multer from 'multer';
+import { extname } from 'path';
+import { requireAdmin } from '../middleware/auth.js';
 
 //Initilization of express router modules to gain access to router
 const modemRoute = express.Router();
-const upload = multer({ dest: 'public/images' }); 
+const upload = multer({
+    dest: 'public/images',
+    limits: {
+        fileSize: 2 * 1024 * 1024,
+        files: 1,
+    },
+    fileFilter: (req, file, callback) => {
+        const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+        const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
+        const extension = extname(file.originalname || '').toLowerCase();
+
+        if (allowedMimeTypes.has(file.mimetype) && allowedExtensions.has(extension)) {
+            return callback(null, true);
+        }
+
+        callback(new Error('Only JPEG, PNG, WEBP, and GIF images are allowed.'));
+    },
+});
+
+modemRoute.use(requireAdmin);
 
 //Declaration of the routes for this specific page pointing towards a method present in the controller
 modemRoute.route('/')

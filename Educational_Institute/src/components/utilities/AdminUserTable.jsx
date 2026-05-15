@@ -17,16 +17,21 @@ export default function AdminUserTable({props, deletion}) {
     const admin = '64e4c30593fb86fc6472fa18';
 
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
+        <div className="admin-table-wrap">
+            <div className="admin-table-toolbar">
+                <div>
+                    <strong>Users</strong>
+                    <span>{props.length} accounts</span>
+                </div>
+            </div>
+        <TableContainer className="admin-table-container" component={Paper}>
+            <Table sx={{ minWidth: 620 }} size="small" aria-label="admin users table">
                 <TableHead>
                     <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>Id</TableCell>
+                        <TableCell>Actions</TableCell>
                         <TableCell>Username</TableCell>
                         <TableCell>Status</TableCell>
-                        
-                        <TableCell></TableCell>
+                        <TableCell>Record ID</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -37,19 +42,17 @@ export default function AdminUserTable({props, deletion}) {
                                     key={item._id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >   
-                                    <TableCell>
-                                        <Link to={`/admin/edit/user/${item._id}`}><IconButton><RemoveRedEyeIcon/></IconButton></Link>
-                                    </TableCell>  
-                                    <TableCell>{item._id}</TableCell>  
-                                    <TableCell>{item.role_id === admin && <LiaCrownSolid />}{item.username}</TableCell>  
-                                    <TableCell>{item.status}</TableCell>
-                                    <TableCell>
+                                    <TableCell className="admin-actions-cell">
+                                        <Link className="admin-icon-action" aria-label={`View ${item.username}`} to={`/admin/edit/user/${item._id}`}><RemoveRedEyeIcon/></Link>
                                         {
                                             item.role_id !== admin &&
-                                        <IconButton color='primary' onClick={() => deletion(item._id)}><BlockIcon/>
+                                        <IconButton className="admin-icon-action danger" aria-label={`Block ${item.username}`} onClick={() => deletion(item._id)}><BlockIcon/>
                                         </IconButton>
                                         }
-                                    </TableCell>                              
+                                    </TableCell>
+                                    <TableCell className="admin-record-name">{item.role_id === admin && <LiaCrownSolid className="admin-crown" />}{item.username}</TableCell>
+                                    <TableCell><span className={item.status === 'Active' ? 'admin-status active' : 'admin-status'}>{item.status}</span></TableCell>
+                                    <TableCell className="admin-record-id">{item._id}</TableCell>
                                 </TableRow>
                             )
                         })
@@ -57,5 +60,6 @@ export default function AdminUserTable({props, deletion}) {
                 </TableBody>
             </Table>
         </TableContainer>
+        </div>
     )
 }

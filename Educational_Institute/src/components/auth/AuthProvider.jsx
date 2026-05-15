@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext } from "react";
 
 const ContextAuthentication = createContext({});
 
@@ -8,8 +8,6 @@ export const AuthProvider = ({ children }) => {
       'username': localStorage.getItem('username')
     }
   });
-
-  console.log(valueForAuth)
   return (
     <ContextAuthentication.Provider value={{ valueForAuth, setValueForAuth }}>
       {children}

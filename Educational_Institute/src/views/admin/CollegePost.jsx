@@ -35,9 +35,16 @@ export default function CollegePost(){
     }
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handlePostSubmit}>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Create college</h1>
+                    <p>Add a new college listing with contact, location, schedule, and ownership details.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
+                <form className="admin-form" onSubmit={handlePostSubmit}>
                     <div>
                         <label>Name</label>
                         <input
@@ -164,7 +171,7 @@ export default function CollegePost(){
                     </div>
                     <button>Post Data</button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     )
 }

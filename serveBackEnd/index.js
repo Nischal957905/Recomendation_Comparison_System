@@ -24,8 +24,23 @@ dotenv.config();
 const app = express()
 app.use(logger) //function for logging web app log into the logs directories
 app.use(cors(core)) //implementation of cors policy to block or allow access
-app.use(express.static('public')) //declaration of entrypoint directoyr file
-app.use(express.json())
+app.disable('x-powered-by')
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('X-Frame-Options', 'DENY')
+    res.setHeader('Referrer-Policy', 'no-referrer')
+    res.setHeader('Permissions-Policy', 'geolocation=(self)')
+    next()
+})
+app.use(express.static('public', {
+    dotfiles: 'ignore',
+    fallthrough: true,
+    maxAge: '1h',
+    setHeaders: (res) => {
+        res.setHeader('X-Content-Type-Options', 'nosniff')
+    }
+})) //declaration of entrypoint directoyr file
+app.use(express.json({ limit: '100kb' }))
 app.use(cookieParser())
 app.use('/',root); //declaration of routes path
 app.use('/auth', routeAuth)
@@ -35,9 +50,12 @@ app.use('/discussion', routeDiscussion);
 app.use('/comparison', routeComparison);
 app.use('/college',routeCollege);
 app.use('/school', routeSchool)
-dbConnection()
+dbConnection().catch((connectionError) => {
+    console.error('MongoDB connection failed:', connectionError.message)
+    process.exit(1)
+})
 
-const PORT = process.env.port || 8800
+const PORT = process.env.PORT || process.env.port || 8800
 
 //Usage of filename and dirname to convert plain js into es6 module.
 //Necessary to define path later on
@@ -77,5 +95,16 @@ mongoose.connection.on('error', errors => {
     console.log(errors)
     eventLogs(`${errors.no}: ${errors.code}\t${errors.syscall}\t${errors.hostname}`, 'mongoErrorLogs.log')
 })
+
+const shutdown = async () => {
+    try {
+        await mongoose.connection.close()
+    } finally {
+        process.exit(0)
+    }
+}
+
+process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown)
 
 

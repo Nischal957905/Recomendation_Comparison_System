@@ -35,9 +35,16 @@ export default function SchoolPost(){
     }
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handlePostSubmit}>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Create school</h1>
+                    <p>Add a new school listing with academic board, contact, location, and ownership details.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
+                <form className="admin-form" onSubmit={handlePostSubmit}>
                     <div>
                         <label>Name</label>
                         <input
@@ -166,7 +173,7 @@ export default function SchoolPost(){
                     </div>
                     <button>Post Data</button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     )
 }

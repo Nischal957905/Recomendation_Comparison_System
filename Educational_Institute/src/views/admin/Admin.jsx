@@ -1,6 +1,7 @@
 import { useGetAdminShowListQuery, useDeletePostAdminQuery } from "../../app/api/adminSlice"
 import Paginate from "../../components/pagination/Paginate"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 //Tabs
 import Box from '@mui/material/Box';
@@ -21,11 +22,18 @@ export default function Admin() {
     const {
         data,
         isSuccess,
-        isloading,
+        isLoading,
+        isError,
+        error,
         refetch,
     } = useGetAdminShowListQuery(pageValue)
 
-    const {structuredInstitution, structuredCollege, structuredSchool, totalPage} = data ? data : []
+    const {
+        structuredInstitution = [],
+        structuredCollege = [],
+        structuredSchool = [],
+        totalPage = 1,
+    } = data || {}
     
     const handleMovePage = (event, newPage) => {
         if (newPage >= 1 && newPage <= totalPage) {
@@ -40,33 +48,52 @@ export default function Admin() {
         setTabValue(newVal)
     }
 
+    const statusMessage = isLoading
+        ? 'Loading admin records...'
+        : isError
+            ? error?.status === 401 || error?.status === 403
+                ? 'Your admin session expired. Log in again to load records.'
+                : 'Unable to load admin records right now.'
+            : null
+
     const [deleteValue, setDeleteValue] = useState()
 
     const {
-        data: delData,
         isSuccess: success
-    } = useDeletePostAdminQuery(deleteValue)
+    } = useDeletePostAdminQuery(deleteValue, {
+        skip: !deleteValue,
+    })
+
+    useEffect(() => {
+        if(success){
+            refetch()
+        }
+    }, [success, refetch])
 
     const handleDelete = (category, deletion) => {
         setDeleteValue({
             delete: deletion,
             category: category,
         })
-        if(success){
-            refetch()
-        }
     }
 
     return (
-        <div>
-            <div>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Manage listings</h1>
+                    <p>Create, edit, and remove consultancy, college, and school records from one workspace.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
                 <Box>
                     <TabContext value={tabValue}>
-                        <Box sx={{borderBottom:1, borderColor:"divider"}}>
+                        <Box className="admin-tabs">
                             <TabList onChange={tabSwappingHandler}>
-                                <Tab value="1" label="Institution"/>
-                                <Tab value="2" label="College"/>
-                                <Tab value="3" label="School"/>
+                                <Tab value="1" label={`Consultancies (${structuredInstitution?.length || 0})`}/>
+                                <Tab value="2" label={`Colleges (${structuredCollege?.length || 0})`}/>
+                                <Tab value="3" label={`Schools (${structuredSchool?.length || 0})`}/>
                             </TabList>
                         </Box>
                         <TabPanel value="1">
@@ -77,10 +104,13 @@ export default function Admin() {
                                         link='new/consultancy'
                                         deletion = {handleDelete}
                                         category = "consultancy"
-                                        editLink = "/admin/edit/consultancy/"
+                                        editLink = "/admin/edit/institution/"
                                     />
                                 ) : (
-                                    <div>No data To show</div>
+                                    <div className="admin-empty">
+                                        {statusMessage || 'No consultancy records to show.'}
+                                        {isError && <Link className="admin-inline-link" to="/auth/login">Login</Link>}
+                                    </div>
                                 )
                             }
                         </TabPanel>
@@ -95,7 +125,10 @@ export default function Admin() {
                                         editLink = "/admin/edit/college/"
                                     />
                                 ) : (
-                                    <div>No data To show</div>
+                                    <div className="admin-empty">
+                                        {statusMessage || 'No college records to show.'}
+                                        {isError && <Link className="admin-inline-link" to="/auth/login">Login</Link>}
+                                    </div>
                                 )
                             }
                         </TabPanel>
@@ -110,13 +143,16 @@ export default function Admin() {
                                         editLink = "/admin/edit/school/"
                                     />
                                 ) : (
-                                    <div>No data To show</div>
+                                    <div className="admin-empty">
+                                        {statusMessage || 'No school records to show.'}
+                                        {isError && <Link className="admin-inline-link" to="/auth/login">Login</Link>}
+                                    </div>
                                 )
                             }
                         </TabPanel>
                     </TabContext>
                 </Box>
-            </div>
+            </section>
             { isSuccess &&
                 <Paginate
                     count = {totalPage}
@@ -124,6 +160,6 @@ export default function Admin() {
                     pageCurrently={pageValue.page}
                 />
             }
-        </div>
+        </main>
     )
 }

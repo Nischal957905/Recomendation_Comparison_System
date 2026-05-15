@@ -298,7 +298,7 @@ const createReviewRating = handleAsync(async (req,res) => {
 
     const review = req.query;
     const reviewComment = review.review
-    const user = review.username;
+    const user = req.user.username;
 
     const institution = review.institution;
 

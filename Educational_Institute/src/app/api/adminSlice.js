@@ -1,11 +1,12 @@
 //necessary imports for the endpoint making
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import baseQuery from './baseQuery'
 
 //This function is used for creating the api for the frontend and utilizes various 
 //options to allow frontend access data.
 export const adminSlice = createApi({
     reducerPath: 'admin',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8800'}),
+    baseQuery,
     tagTypes: ['Admin'],
     endpoints: (builder) => ({
         postCollegeNew: builder.query({

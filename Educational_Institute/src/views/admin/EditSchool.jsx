@@ -53,9 +53,16 @@ export default function EditSchool(){
     },[data])
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handlePostSubmit}>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Edit school</h1>
+                    <p>Update school profile, academic board, schedule, location, and contact details.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
+                <form className="admin-form" onSubmit={handlePostSubmit}>
                     <div>
                         <label>Name</label>
                         <input
@@ -174,7 +181,7 @@ export default function EditSchool(){
                     </div>
                     <button>Post Data</button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     )
 }

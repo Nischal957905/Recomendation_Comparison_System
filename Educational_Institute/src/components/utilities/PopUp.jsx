@@ -1,5 +1,5 @@
-import { Dialog, Button, AppBar, Select, MenuItem} from "@mui/material";
-import React, { useState } from "react";
+import { Dialog, Select, MenuItem} from "@mui/material";
+import React from "react";
 
 export default function PopUp(props) {
 
@@ -13,8 +13,6 @@ export default function PopUp(props) {
         applyClear,
     } = props;
 
-    const [formValue, setFormValue] = useState([])
-
     const setUpdatedValues = (event) => {
         const {value,name} = event.target;
         setPopUpMenuOptions(name, value)
@@ -25,12 +23,22 @@ export default function PopUp(props) {
         <Dialog 
             onClose={popUpMenuCloseHandle} 
             open={openStatus} 
-            fullScreen
+            fullWidth
+            maxWidth="md"
         >
             <div className="main-pop-con">
+                <div className="advanced-filter-head">
+                    <div>
+                        <span>Advanced filters</span>
+                        <p>Fine tune consultancies by schedule, service model, reach, distance, and profile ranges.</p>
+                    </div>
+                    <button type="button" onClick={popUpMenuCloseHandle} className="close-pop-menu">
+                        Close
+                    </button>
+                </div>
                 <div className="pop-menu-items">
-                    <div className="pop-menu-openeing-time">
-                        <label>Opening Time:</label>
+                    <div className="advanced-field pop-menu-openeing-time">
+                        <label>Opening Time</label>
                         <input 
                             type="time" 
                             name="opening-time"
@@ -38,8 +46,8 @@ export default function PopUp(props) {
                             onChange={setUpdatedValues}
                         />
                     </div>
-                    <div className="pop-menu-closing-time">
-                        <label>Closing Time:</label>
+                    <div className="advanced-field pop-menu-closing-time">
+                        <label>Closing Time</label>
                         <input 
                             type="time" 
                             name="closing-time"
@@ -47,8 +55,8 @@ export default function PopUp(props) {
                             onChange={setUpdatedValues}
                         />
                     </div>
-                    <div className="pop-menu-online">
-                        <label>Online:</label>
+                    <div className="advanced-field pop-menu-online">
+                        <label>Online Service</label>
                         <select 
                             name="online-service" 
                             className="pop-menu-online-service"
@@ -60,8 +68,8 @@ export default function PopUp(props) {
                             <option value="both">Both</option>
                         </select>
                     </div>
-                    <div className="pop-menu-opening-days">
-                        <label>Opening Days:</label>
+                    <div className="advanced-field pop-menu-opening-days">
+                        <label>Opening Days</label>
                         <Select 
                             multiple 
                             value={popUpMenuOptions['opening-days']} 
@@ -79,8 +87,8 @@ export default function PopUp(props) {
                             <MenuItem value="Saturday" style={{fontSize: '12px'}}>Saturday</MenuItem>
                         </Select>
                     </div>
-                    <div className="pop-menu-platform">
-                        <label>Platform:</label>
+                    <div className="advanced-field pop-menu-platform">
+                        <label>Platform</label>
                         <select 
                             name="platform"
                             className="pop-menu-platform"
@@ -91,8 +99,8 @@ export default function PopUp(props) {
                             <option value="Local">Local</option>
                         </select>
                     </div>
-                    <div className="pop-menu-distance">
-                        <label>Distance:</label>
+                    <div className="advanced-field pop-menu-distance">
+                        <label>Distance</label>
                         <select 
                             name="distance"
                             className="pop-menu-distance"
@@ -104,47 +112,59 @@ export default function PopUp(props) {
                             <option value="Distant">Distant</option>
                         </select>
                     </div>
-                    <div className="pop-menu-range-success">
-                        <label>Success:</label>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['success-start']} 
-                            name="success-start"
-                            onChange={setUpdatedValues}/>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['success-end']} 
-                            name="success-end"
-                            onChange={setUpdatedValues}/>
+                    <div className="advanced-field pop-menu-range-success">
+                        <label>Success Range</label>
+                        <div className="range-inputs">
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['success-start']} 
+                                name="success-start"
+                                placeholder="Min"
+                                onChange={setUpdatedValues}/>
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['success-end']} 
+                                name="success-end"
+                                placeholder="Max"
+                                onChange={setUpdatedValues}/>
+                        </div>
                     </div>
-                    <div className="pop-menu-range-exp">
-                        <label>Experience:</label>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['experience-start']} 
-                            name="experience-start"
-                            onChange={setUpdatedValues}/>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['experience-end']} 
-                            name="experience-end"
-                            onChange={setUpdatedValues}/>
+                    <div className="advanced-field pop-menu-range-exp">
+                        <label>Experience Range</label>
+                        <div className="range-inputs">
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['experience-start']} 
+                                name="experience-start"
+                                placeholder="Min"
+                                onChange={setUpdatedValues}/>
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['experience-end']} 
+                                name="experience-end"
+                                placeholder="Max"
+                                onChange={setUpdatedValues}/>
+                        </div>
                     </div>
-                    <div className="pop-menu-range-uni">
-                        <label>University:</label>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['university-start']} 
-                            name="university-start"
-                            onChange={setUpdatedValues}/>
-                        <input 
-                            type="number" 
-                            value={popUpMenuOptions['university-end']} 
-                            name="university-end" 
-                            onChange={setUpdatedValues}/>
+                    <div className="advanced-field pop-menu-range-uni">
+                        <label>University Range</label>
+                        <div className="range-inputs">
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['university-start']} 
+                                name="university-start"
+                                placeholder="Min"
+                                onChange={setUpdatedValues}/>
+                            <input 
+                                type="number" 
+                                value={popUpMenuOptions['university-end']} 
+                                name="university-end" 
+                                placeholder="Max"
+                                onChange={setUpdatedValues}/>
+                        </div>
                     </div>
-                    <div className="rating-pop-up-menu">
-                        <label>Rating:</label>
+                    <div className="advanced-field rating-pop-up-menu">
+                        <label>Rating</label>
                         <select 
                             name="rating"
                             className="pop-menu-rating"
@@ -158,14 +178,11 @@ export default function PopUp(props) {
                     </div>
                 </div>
                 <div className="pop-menu-div">
-                        <button onClick={popUpMenuCloseHandle} className="close-pop-menu">
-                            Close
+                        <button type="button" onClick={applyClear} className="apply-pop-clear">
+                            Clear filters
                         </button>
-                        <button onClick={applyDelay} className="apply-pop-menu">
+                        <button type="button" onClick={applyDelay} className="apply-pop-menu">
                             Apply
-                        </button>
-                        <button onClick={applyClear} className="apply-pop-clear">
-                            Clear
                         </button>
                 </div>
             </div>

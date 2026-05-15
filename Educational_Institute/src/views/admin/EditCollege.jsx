@@ -32,8 +32,6 @@ export default function EditCollege(){
         setDelayedData(postData)
     }
 
-    console.log(data)
-    
     useEffect(() => {
         if(isSuccess){
             setPostData({
@@ -55,9 +53,16 @@ export default function EditCollege(){
     },[data])
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handlePostSubmit}>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Edit college</h1>
+                    <p>Update college profile, location, contact, and ownership information.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
+                <form className="admin-form" onSubmit={handlePostSubmit}>
                     <div>
                         <label>Name</label>
                         <input
@@ -154,7 +159,7 @@ export default function EditCollege(){
                     </div>
                     <button>Post Data</button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     )
 }

@@ -53,7 +53,6 @@ const upload = handleAsync(async (req, res) => {
     return res.status(201).json({
         filename: req.file.filename,
         originalname: req.file.originalname,
-        path: req.file.path,
         mimetype: req.file.mimetype,
         size: req.file.size
     })
@@ -62,6 +61,9 @@ const upload = handleAsync(async (req, res) => {
 const editPost = handleAsync(async (req, res) => {
 
     const institution = req.params.institution;
+    if (!mongoose.Types.ObjectId.isValid(institution)) {
+        return res.status(400).json({ message: 'Invalid user id.' })
+    }
     const data = await Post.find({user_id: institution}).select({date: 1, _id: 1, post: 1}).lean()
 
     return res.json(data)
@@ -71,6 +73,9 @@ const inactivateUser = handleAsync(async (req,res) => {
     
     if(req.query.user !== '' && req.query.user){
         const user = req.query.user;
+        if (!mongoose.Types.ObjectId.isValid(user)) {
+            return res.status(400).json({ message: 'Invalid user id.' })
+        }
         const id = new mongoose.Types.ObjectId(user)
         const data = await User.findOne({_id: id}).select({status: 1}).lean()
         const updateFil = {_id: id}
@@ -90,6 +95,9 @@ const editCollege = handleAsync(async (req, res) => {
     const institution = req.params.institution
     const params = req.query
     const edit = params.edit === 'true' ? true : false
+    if (!mongoose.Types.ObjectId.isValid(institution)) {
+        return res.status(400).json({ message: 'Invalid college id.' })
+    }
     const id = new mongoose.Types.ObjectId(institution)
     const initialArray = await College.findOne({_id: id}).select().lean();
  
@@ -103,8 +111,6 @@ const editCollege = handleAsync(async (req, res) => {
 
         const find = await College.findOne({name: params.name}).select({_id: 1}).lean();
         const condition = find && (id.equals(find._id)) 
-        console.log(condition)
-        console.log(find)
         if(find === null && condition === null || find && condition ){
             const findValue = {_id: id}
             const updatedValues = {
@@ -136,6 +142,9 @@ const editCollege = handleAsync(async (req, res) => {
 const editConsultancy = handleAsync(async (req, res) => {
     const institution = req.params.institution
     const params = req.query
+    if (!mongoose.Types.ObjectId.isValid(institution)) {
+        return res.status(400).json({ message: 'Invalid institution id.' })
+    }
     const id = new mongoose.Types.ObjectId(institution)
     const initialArray = await Institution.findOne({_id: id}).select().lean();
 
@@ -181,6 +190,9 @@ const editConsultancy = handleAsync(async (req, res) => {
 const editSchool = handleAsync(async (req, res) => {
     const institution = req.params.institution
     const params = req.query
+    if (!mongoose.Types.ObjectId.isValid(institution)) {
+        return res.status(400).json({ message: 'Invalid school id.' })
+    }
     const id = new mongoose.Types.ObjectId(institution)
     const initialArray = await School.findOne({_id: id}).select().lean();
 
@@ -223,19 +235,22 @@ const editSchool = handleAsync(async (req, res) => {
 
 const getAdminShowCase = handleAsync(async (req, res) => {
 
-    const page = req.query.page
-    const institutionData = await Institution.find().select({name: 1, _id:1}).lean();
-    const collegeData = await College.find().select({name: 1, _id: 1}).lean();
-    const schoolData = await School.find().select({name: 1, _id: 1}).lean();
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1)
+    const pageSize = 20
+    const [institutionData, collegeData, schoolData] = await Promise.all([
+        Institution.find().select({name: 1, _id:1}).sort({name: 1}).lean(),
+        College.find().select({name: 1, _id: 1}).sort({name: 1}).lean(),
+        School.find().select({name: 1, _id: 1}).sort({name: 1}).lean(),
+    ]);
 
-    const begining = (page - 1) * 20;
-    const ending = page * 20;
+    const begining = (page - 1) * pageSize;
+    const ending = page * pageSize;
 
     const structuredInstitution = institutionData.slice(begining, ending)
     const structuredCollege = collegeData.slice(begining, ending)
     const structuredSchool = schoolData.slice(begining, ending)
     const maxValue = Math.max(institutionData.length, collegeData.length, schoolData.length)
-    const totalPage =  Math.ceil( maxValue / 20);
+    const totalPage =  Math.max(Math.ceil(maxValue / pageSize), 1);
 
     return res.json({structuredInstitution, structuredCollege, structuredSchool, totalPage})
 })

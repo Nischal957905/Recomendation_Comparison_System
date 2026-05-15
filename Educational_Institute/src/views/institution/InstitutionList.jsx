@@ -33,6 +33,7 @@ import { Link } from 'react-router-dom'
 
 import Search from "../../components/utilities/Search";
 import InstitutionImage from "../../components/utilities/InstitutionImage";
+import InstitutionCard from "../../components/utilities/InstitutionCard";
 //Function definintion to be exported.
 export default function InstitutionList(){
 
@@ -75,6 +76,15 @@ export default function InstitutionList(){
     const endIndex = startIndex + itemsPerPage;
     let displayedData = institutions && institutions.slice(startIndex, endIndex);
     let totalPages = Math.ceil(institutions && institutions.length / itemsPerPage);
+
+    if (Array.isArray(institutions)) {
+        const sortedInstitutions = [...institutions].sort((first, second) => {
+            return asecSort
+                ? first.name.localeCompare(second.name)
+                : second.name.localeCompare(first.name)
+        })
+        displayedData = sortedInstitutions.slice(startIndex, endIndex)
+    }
 
     const [values, setValues] = useState()
     
@@ -253,23 +263,32 @@ export default function InstitutionList(){
         setSelectedValue({})
     }
 
+    const clearMainFilters = () => {
+        setSelectedValue({})
+    }
+
+    const activeFilters = Object.entries(selectedValue).flatMap(([key, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+            return value.map((item) => ({
+                key,
+                label: String(item).replace(/^\s*(✓|âœ“)\s*/, '').replace(/\s+Institution\s*$/i, '').trim()
+            }))
+        }
+        return []
+    })
+
     //This code consists of codes to return necessary jsx for the each insitituoin
     //in the database system.
 
     const institutionName = Array.isArray(institutions)
         ? displayedData.map((institution, index) => {
             return (
-                <div key={index} className="child-items">
-                    <div key={index} className="img-holder">
-                        <InstitutionImage name={institution.name} category="institution" className="logo-img" />
-                    </div>
-                    <div className="name-holder">
-                        {institution.name}
-                        <Link to={`/institution/${institution.name}`}>
-                            <GrFormNextLink className="link-institution"/>
-                        </Link>
-                    </div>
-                </div>
+                <InstitutionCard
+                    key={institution._id || institution.name || index}
+                    item={institution}
+                    category="institution"
+                    to={`/institution/${institution.name}`}
+                />
             )
         }) : null
 
@@ -342,25 +361,48 @@ export default function InstitutionList(){
                 <div>
                     <div className="filter-options">
                         <div className="filter-con">
+                            <div className="filter-panel-header">
+                                <div>
+                                    <span>Refine results</span>
+                                    <p>Choose one or more filters. Results update as you select.</p>
+                                </div>
+                                <button type="button" className="filter-clear" onClick={clearMainFilters}>Clear</button>
+                            </div>
                             <form onSubmit={submitFilters}>
                             <div className="filter-country"><Filter fieldName="country" update={updateFilters}  options={countries || []} values={selectedValue.country || [] }/></div>
                             <div className="filter-location"><Filter fieldName="experience" update={updateFilters} options={['High','Low','Moderate']} values={selectedValue.experience || [] }/></div>
                             <div className="filter-university"><Filter fieldName="speciality" update={updateFilters} options={speciality || []} values={selectedValue.speciality || [] }/></div>
-                            <button>Apply</button>
                             </form>
-                            <div className="filter-settings" onClick={popMenuOpenHandler}>
+                            <button type="button" className="filter-settings" onClick={popMenuOpenHandler}>
                                 <p>Filter</p>
                                 <IoMdSettings/>
-                            </div>
+                            </button>
                         </div>
                     </div>
                     <div className="result-counter">
-                        <p>Institution Found: {institutions ? institutions.length : 0} </p>
-                        <BiSolidSortAlt className="sort-icon" onClick={handleSorting}/>
+                        <div>
+                            <p>Results: {institutions ? institutions.length : 0}</p>
+                            {activeFilters.length > 0 && (
+                                <div className="active-filter-row">
+                                    {activeFilters.map((filter, index) => (
+                                        <span key={`${filter.key}-${index}`}>{filter.label}</span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <button type="button" className="sort-action" onClick={handleSorting}>
+                            <BiSolidSortAlt />
+                            <span>{asecSort ? 'Sort A-Z' : 'Sort Z-A'}</span>
+                        </button>
                     </div>
                     <div className="item-container">
-                        { institutionName }
+                        {institutionName?.length ? institutionName : <div className="empty-list-state">No consultancies match the selected filters. Clear filters and try again.</div>}
                     </div>
+                    <Paginate
+                        count = {totalPages}
+                        update = {handlePageChange}
+                        pageCurrently={currentPage}
+                    />
                     <div></div>
                     <form onSubmit={submitAdditionalFilters}>
                         <PopUp 
@@ -386,12 +428,6 @@ export default function InstitutionList(){
                 <div className="top-rated">
                     { rankingInstitution}
                 </div>
-                
-                <Paginate
-                    count = {totalPages}
-                    update = {handlePageChange}
-                    pageCurrently={currentPage}
-                />
             </div>
         </div>
         </>

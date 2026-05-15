@@ -10,11 +10,18 @@ import Paper from '@mui/material/Paper';
 export default function PostsTable({props}) {
 
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
+        <div className="admin-table-wrap">
+            <div className="admin-table-toolbar">
+                <div>
+                    <strong>User posts</strong>
+                    <span>{props.length} posts</span>
+                </div>
+            </div>
+        <TableContainer className="admin-table-container" component={Paper}>
+            <Table sx={{ minWidth: 620 }} size="small" aria-label="admin user posts table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>S.N.</TableCell>
+                        <TableCell>No.</TableCell>
                         <TableCell>Post</TableCell>
                         <TableCell>Date</TableCell>
                     </TableRow>
@@ -27,8 +34,8 @@ export default function PostsTable({props}) {
                                     key={item._id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >   
-                                    <TableCell>{index + 1}</TableCell>  
-                                    <TableCell>{item.post}</TableCell>  
+                                    <TableCell className="admin-record-id">{index + 1}</TableCell>
+                                    <TableCell className="admin-record-name">{item.post}</TableCell>
                                     <TableCell>{item.date}</TableCell>
                                 </TableRow>
                             )
@@ -37,5 +44,6 @@ export default function PostsTable({props}) {
                 </TableBody>
             </Table>
         </TableContainer>
+        </div>
     )
 }

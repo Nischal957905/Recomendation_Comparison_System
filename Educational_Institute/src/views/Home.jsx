@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiMapPin, FiSearch } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiCheckCircle, FiMapPin, FiSearch } from "react-icons/fi";
 
 export default function Home(){
 
@@ -22,18 +22,15 @@ export default function Home(){
                         </Link>
                     </div>
                 </div>
-                <div className="hero-panel" aria-label="Recommendation highlights">
-                    <div className="hero-metric">
-                        <strong>3</strong>
-                        <span>Institution types</span>
-                    </div>
-                    <div className="hero-metric">
+                <div className="hero-media hero-media-single" aria-label="Featured education comparison visual">
+                    <img
+                        className="hero-media-main"
+                        src="/images/home-hero-generated.png"
+                        alt="Students comparing education options on a modern digital dashboard"
+                    />
+                    <div className="hero-score-card">
                         <strong>10</strong>
                         <span>Top ranked picks</span>
-                    </div>
-                    <div className="hero-metric wide">
-                        <strong>Smart filters</strong>
-                        <span>Country, accreditation, ownership, experience, online service, and distance.</span>
                     </div>
                 </div>
             </section>
@@ -56,15 +53,21 @@ export default function Home(){
                 </Link>
             </section>
 
-            <section className="content-band">
-                <div>
+            <section className="home-feature">
+                <div className="home-feature-media">
+                    <img
+                        src="/images/home-comparison-generated.png"
+                        alt="Education comparison planning workspace"
+                    />
+                </div>
+                <div className="home-feature-copy">
                     <span className="eyebrow">How it helps</span>
                     <h2>Move from scattered research to confident comparison.</h2>
-                </div>
-                <div className="value-list">
-                    <p>Use search when you already know a name, or filters when you are exploring options.</p>
-                    <p>Open detail pages for reviews, location, program strengths, and quick facts.</p>
-                    <p>Compare institutions side by side to understand where each option performs best.</p>
+                    <div className="value-list">
+                        <p><FiCheckCircle /> Use search when you already know a name, or filters when you are exploring options.</p>
+                        <p><FiCheckCircle /> Open detail pages for reviews, location, program strengths, and quick facts.</p>
+                        <p><FiCheckCircle /> Compare institutions side by side to understand where each option performs best.</p>
+                    </div>
                 </div>
             </section>
         </main>

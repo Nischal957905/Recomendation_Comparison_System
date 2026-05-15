@@ -5,10 +5,10 @@ const AuthenticationEnable = () => {
 
     const { valueForAuth } = useAuthentication()
     const location = useLocation()
-    console.log(location)
+    const accessToken = localStorage.getItem('accessToken')
 
     return (
-        valueForAuth?.username
+        valueForAuth?.username && accessToken
             ?   <Outlet/>
             : <Navigate to="/auth/login" state={{from: location}} replace/>
     )

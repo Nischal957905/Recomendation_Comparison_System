@@ -23,8 +23,6 @@ export default function EditConsultancy(){
             }
         })
     }
-    console.log(data)
-
     useEffect(() => {
         if(isSuccess){
             setPostData({
@@ -52,9 +50,16 @@ export default function EditConsultancy(){
     }
 
     return (
-        <div>
-            <div>
-                <form onSubmit={handlePostSubmit}>
+        <main className="admin-page">
+            <section className="admin-page-head">
+                <div>
+                    <span className="eyebrow">Admin workspace</span>
+                    <h1>Edit consultancy</h1>
+                    <p>Update consultancy service reach, performance, contact, and platform details.</p>
+                </div>
+            </section>
+            <section className="admin-panel">
+                <form className="admin-form" onSubmit={handlePostSubmit}>
                     <div>
                         <label>Name</label>
                         <input
@@ -174,7 +179,7 @@ export default function EditConsultancy(){
                     </div>
                     <button>Update</button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     )
 }
